@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sight_mate_app/core/constants/app_assets.dart';
 import 'package:sight_mate_app/core/constants/colors.dart';
-import 'package:sight_mate_app/core/helper/cach_data.dart';
 import 'package:sight_mate_app/core/utils/router/app_router.dart';
 
 class SplashViewbody extends StatefulWidget {
@@ -54,7 +52,7 @@ class _SplashViewbodyState extends State<SplashViewbody>
                   "logo &name",
                   style: TextStyle(fontSize: 50.sp),
                 ),
-
+              
                 // child: SvgPicture.asset(
                 //   AppAssets.logo,
                 //   color: Colors.white,
