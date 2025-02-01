@@ -15,24 +15,23 @@ class CustomGeneralButton extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        height: height,
-        width: width,
+        // height: height ?? 0,
+        // width: width ?? 0,
         decoration: BoxDecoration(
           color: AppColors.primaryBlueColor,
           borderRadius: BorderRadius.circular(45),
         ),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              text!,
-              style: GoogleFonts.cairo(
-                fontSize: 14,
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-              ),
-              textAlign: TextAlign.left,
+        child: Padding(
+          padding:
+              const EdgeInsets.only(top: 10, bottom: 10, left: 25, right: 25),
+          child: Text(
+            text!,
+            style: GoogleFonts.cairo(
+              fontSize: 14,
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
             ),
+            textAlign: TextAlign.left,
           ),
         ),
       ),

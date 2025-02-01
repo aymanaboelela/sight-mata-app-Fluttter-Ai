@@ -19,11 +19,11 @@ class OnbordingBackGround extends StatelessWidget {
           alignment: Alignment.bottomRight,
           child: Container(
             width: double.infinity,
-            height: MediaQuery.of(context).size.height * 0.5,
+            height: MediaQuery.of(context).size.height * 0.53,
             decoration: const BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(500),
+                topLeft: Radius.circular(370),
               ),
             ),
           ),
