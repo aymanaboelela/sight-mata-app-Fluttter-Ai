@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 
 import 'package:go_router/go_router.dart';
 import 'package:sight_mate_app/core/utils/router/page_transition.dart';
+import 'package:sight_mate_app/presentation/screens/login_view.dart';
 import 'package:sight_mate_app/presentation/screens/on_bording_view.dart';
 import 'package:sight_mate_app/presentation/screens/splash_view.dart';
 
 abstract class AppRouter {
   static const kOnBoardingView = '/onboardingView';
+  static const login = '/login';
 
   // edit house
 
@@ -23,6 +25,11 @@ abstract class AppRouter {
         path: kOnBoardingView,
         pageBuilder: (context, state) =>
             PageTransitionManager.fadeTransition(const OnBordingView()),
+      ),
+      GoRoute(
+        path: kOnBoardingView,
+        pageBuilder: (context, state) =>
+            PageTransitionManager.fadeTransition(const LoginView()),
       ),
     ],
   );

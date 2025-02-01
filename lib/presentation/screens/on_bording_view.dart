@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sight_mate_app/core/constants/app_assets.dart';
 import 'package:sight_mate_app/core/constants/colors.dart';
 import 'package:sight_mate_app/presentation/widgets/on_bording_back_round.dart';
 import 'package:sight_mate_app/presentation/widgets/on_bording_dots.dart';
+import '../../core/utils/router/app_router.dart';
 import '../../core/widgets/custom_buttons.dart';
 
 class OnBordingView extends StatefulWidget {
@@ -123,7 +125,9 @@ class _OnBordingViewState extends State<OnBordingView> {
                           duration: const Duration(milliseconds: 300),
                           curve: Curves.easeInOut,
                         );
-                      } else {}
+                      } else {
+                        GoRouter.of(context).pushReplacement(AppRouter.login);
+                      }
                     },
                   ),
                 ),
