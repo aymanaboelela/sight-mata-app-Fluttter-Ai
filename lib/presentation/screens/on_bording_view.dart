@@ -126,7 +126,8 @@ class _OnBordingViewState extends State<OnBordingView> {
                           curve: Curves.easeInOut,
                         );
                       } else {
-                        GoRouter.of(context).pushReplacement(AppRouter.login);
+                        GoRouter.of(context)
+                            .pushReplacement(AppRouter.kLoginView);
                       }
                     },
                   ),
