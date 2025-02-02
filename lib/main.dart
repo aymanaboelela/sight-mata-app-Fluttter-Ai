@@ -1,11 +1,21 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sight_mate_app/core/constants/constans.dart';
 import 'package:sight_mate_app/core/helper/cach_data.dart';
 import 'package:sight_mate_app/core/helper/simple_bloc_observer.dart';
 import 'package:sight_mate_app/core/utils/router/app_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Supabase.initialize(
+    url: supabaseUrl,
+    anonKey: apiKey,
+  );
+
+  // bloc observer
   Bloc.observer = SimpleBlocObserver();
   // Ensure screen size is initialized for ScreenUtil
   await ScreenUtil.ensureScreenSize();
