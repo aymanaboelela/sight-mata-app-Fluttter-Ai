@@ -10,4 +10,5 @@ abstract class AppAssets {
   static const onbording2 = 'assets/josn/onbording2.json';
   static const onbording3 = 'assets/josn/onbording3.json';
   static const onbording4 = 'assets/josn/onbording4.json';
+  static const loding = 'assets/images/loding.json';
 }

@@ -1,6 +1,5 @@
 // import 'package:akodo_api/features/addHouse/presentation/controller/addhouse/add_house_stite.dart';
 
-
 import 'package:go_router/go_router.dart';
 import 'package:sight_mate_app/core/utils/router/page_transition.dart';
 import 'package:sight_mate_app/presentation/screens/create_acounte.dart';
@@ -13,7 +12,7 @@ abstract class AppRouter {
   static const kOnBoardingView = '/onboardingView';
   static const kLoginView = '/login';
   static const kHomeView = '/homeview';
-   static const kSignUp = '/homeview';
+  static const kSignUp = '/signup';
 
   // edit house
 
@@ -35,7 +34,7 @@ abstract class AppRouter {
             PageTransitionManager.fadeTransition(const OnBordingView()),
       ),
       GoRoute(
-        path: kOnBoardingView,
+        path: kLoginView,
         pageBuilder: (context, state) =>
             PageTransitionManager.fadeTransition(const LoginView()),
       ),

@@ -7,14 +7,19 @@ class Customtextformfield extends StatelessWidget {
       required this.hintText,
       this.obscureText = false,
       this.onSuffixIconTap,
-      required this.prefixIcon});
+      required this.prefixIcon,
+      this.controller,
+      this.validator, this.keyboardType});
 
   // variables changes
   final String label;
   final String hintText;
   final IconData prefixIcon;
   final bool obscureText;
+  final TextInputType? keyboardType;
   final VoidCallback? onSuffixIconTap;
+  final TextEditingController? controller;
+  final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +37,15 @@ class Customtextformfield extends StatelessWidget {
           height: 5,
         ),
         TextFormField(
+          validator: validator ??
+              (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter some text';
+                } else
+                  return null;
+              },
+          keyboardType: keyboardType,
+          controller: controller,
           obscureText: obscureText,
           decoration: InputDecoration(
               hintText: hintText,
