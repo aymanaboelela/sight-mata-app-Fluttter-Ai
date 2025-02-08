@@ -1,0 +1,20 @@
+import 'package:flutter/material.dart';
+
+class UserListtile extends StatelessWidget {
+  const UserListtile({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+              decoration: BoxDecoration(
+                color: const Color(0xffF7F7F7),
+                border: Border.all(color: const Color(0xffBFC9D0),width: 1.2),
+              ),
+              child:  ListTile(
+                leading: const Icon(Icons.person_outlined,size: 40,color: Colors.grey,),
+                title:  const Text("Maryem",style: TextStyle(color: Colors.black,fontSize: 18,fontWeight: FontWeight.bold),),
+                trailing: IconButton(onPressed: (){},icon:const  Icon(Icons.arrow_forward,size: 35,color: Colors.grey,), ),
+              ),
+            );
+  }
+}

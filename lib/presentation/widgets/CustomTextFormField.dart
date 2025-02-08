@@ -29,8 +29,9 @@ class Customtextformfield extends StatelessWidget {
         Text(
           label, // the text above TextFormField
           style: const TextStyle(
-            fontSize: 18,
+            fontSize: 16,
             fontFamily: 'Bahnschrift',
+            fontWeight: FontWeight.bold
           ),
         ),
         const SizedBox(

@@ -2,6 +2,7 @@
 
 import 'package:go_router/go_router.dart';
 import 'package:sight_mate_app/core/utils/router/page_transition.dart';
+import 'package:sight_mate_app/presentation/screens/Distance_Off_view.dart';
 import 'package:sight_mate_app/presentation/screens/create_acounte.dart';
 import 'package:sight_mate_app/presentation/screens/home_view.dart';
 import 'package:sight_mate_app/presentation/screens/login_view.dart';
@@ -13,7 +14,7 @@ abstract class AppRouter {
   static const kLoginView = '/login';
   static const kHomeView = '/homeview';
   static const kSignUp = '/signup';
-
+  static const kDistanceOff = '/DistanceOff';
   // edit house
 
   static final router = GoRouter(
@@ -41,7 +42,12 @@ abstract class AppRouter {
       GoRoute(
         path: kHomeView,
         pageBuilder: (context, state) =>
-            PageTransitionManager.fadeTransition( HomeView()),
+            PageTransitionManager.fadeTransition(HomeView()),
+      ),
+      GoRoute(
+        path: kDistanceOff,
+        pageBuilder: (context, state) =>
+            PageTransitionManager.fadeTransition(const DistanceOffView()),
       ),
     ],
   );
