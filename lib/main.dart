@@ -3,13 +3,14 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:sight_mate_app/controllers/auth_cubit.dart';
+import 'package:sight_mate_app/controllers/add_data_cubit/add_data_cubit.dart';
+import 'package:sight_mate_app/controllers/auth/auth_cubit.dart';
 import 'package:sight_mate_app/core/constants/constans.dart';
 import 'package:sight_mate_app/core/helper/cach_data.dart';
 import 'package:sight_mate_app/core/helper/simple_bloc_observer.dart';
 import 'package:sight_mate_app/core/utils/router/app_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:bloc/bloc.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,6 +41,9 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<AuthCubit>(
           create: (context) => AuthCubit(),
+        ),
+        BlocProvider<AddDataCubit>(
+          create: (context) => AddDataCubit(),
         ),
       ],
       child: ScreenUtilInit(

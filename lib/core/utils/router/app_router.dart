@@ -56,27 +56,7 @@ abstract class AppRouter {
       GoRoute(
         path: kDistanceOff,
         pageBuilder: (context, state) =>
-            PageTransitionManager.fadeTransition(const DistanceOffView()),
-      ),
-       GoRoute(
-        path: KMyProfileView,
-        pageBuilder: (context, state) =>
-            PageTransitionManager.fadeTransition(const MyprofileView()),
-      ),
-       GoRoute(
-        path: KSettingsView,
-        pageBuilder: (context, state) =>
-            PageTransitionManager.fadeTransition(const SettingsView()),
-      ),
-      GoRoute(
-        path: kAboutView,
-        pageBuilder: (context, state) =>
-            PageTransitionManager.fadeTransition( AboutView()),
-      ),
-        GoRoute(
-        path: khelpView,
-        pageBuilder: (context, state) =>
-            PageTransitionManager.fadeTransition(const HelpView()),
+            PageTransitionManager.fadeTransition( DistanceOffView(onTap: () { },)),
       ),
     ],
   );
