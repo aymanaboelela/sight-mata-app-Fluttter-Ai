@@ -2,7 +2,11 @@
 
 import 'package:go_router/go_router.dart';
 import 'package:sight_mate_app/core/utils/router/page_transition.dart';
+import 'package:sight_mate_app/presentation/screens/About_view.dart';
+import 'package:sight_mate_app/presentation/screens/Help_View.dart';
 import 'package:sight_mate_app/presentation/screens/Distance_Off_view.dart';
+import 'package:sight_mate_app/presentation/screens/MyProfile_view.dart';
+import 'package:sight_mate_app/presentation/screens/Settings_view.dart';
 import 'package:sight_mate_app/presentation/screens/create_acounte.dart';
 import 'package:sight_mate_app/presentation/screens/home_view.dart';
 import 'package:sight_mate_app/presentation/screens/login_view.dart';
@@ -15,6 +19,11 @@ abstract class AppRouter {
   static const kHomeView = '/homeview';
   static const kSignUp = '/signup';
   static const kDistanceOff = '/DistanceOff';
+  static const KMyProfileView = '/MyProfileView';
+  static const KSettingsView = '/SettingsView';
+  static const kAboutView = '/AboutView';
+  static const khelpView = '/khelpView';
+  
   // edit house
 
   static final router = GoRouter(
@@ -48,6 +57,26 @@ abstract class AppRouter {
         path: kDistanceOff,
         pageBuilder: (context, state) =>
             PageTransitionManager.fadeTransition(const DistanceOffView()),
+      ),
+       GoRoute(
+        path: KMyProfileView,
+        pageBuilder: (context, state) =>
+            PageTransitionManager.fadeTransition(const MyprofileView()),
+      ),
+       GoRoute(
+        path: KSettingsView,
+        pageBuilder: (context, state) =>
+            PageTransitionManager.fadeTransition(const SettingsView()),
+      ),
+      GoRoute(
+        path: kAboutView,
+        pageBuilder: (context, state) =>
+            PageTransitionManager.fadeTransition( AboutView()),
+      ),
+        GoRoute(
+        path: khelpView,
+        pageBuilder: (context, state) =>
+            PageTransitionManager.fadeTransition(const HelpView()),
       ),
     ],
   );

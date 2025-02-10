@@ -8,7 +8,7 @@ class NotificationView extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Center(
       child:  Text(
-        "🔔 Settings Page",
+        "🔔 Notification Page",
         style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
       ),
     );

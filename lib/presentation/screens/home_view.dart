@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeView> {
         items: const [
           Icon(Icons.home, size: 30, color: Colors.white),
           Icon(Icons.location_on, size: 30, color: Colors.white),
-          Icon(Icons.settings, size: 30, color: Colors.white),
+          Icon(Icons.notifications, size: 30, color: Colors.white),
         ],
         index: _page, // Set the initial selected index
         onTap: (index) {
