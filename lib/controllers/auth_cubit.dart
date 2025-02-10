@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:sight_mate_app/core/constants/constans.dart';
+import 'package:sight_mate_app/core/helper/cach_data.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 part 'auth_state.dart';
@@ -22,10 +24,10 @@ class AuthCubit extends Cubit<AuthState> {
         data: {"username": userName, "phone": phone},
         email: email,
         password: password,
-        
       );
 
       if (response.user != null) {
+        CacheData.setData(key: userNameUser, value: userName);
         emit(CreateSuccess());
       } else {
         emit(CreateError(message: "Unknown error occurred during signup"));
@@ -92,6 +94,8 @@ class AuthCubit extends Cubit<AuthState> {
       } else {
         emit(LoginError(message: "Login failed. Please try again."));
       }
+      CacheData.setData(
+          key: userNameUser, value: response.user?.userMetadata?['username']);
     } on AuthException catch (e) {
       log("login the error is **** ${e.message}");
 

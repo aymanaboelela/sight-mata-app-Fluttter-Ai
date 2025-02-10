@@ -44,11 +44,11 @@ abstract class AppRouter {
         pageBuilder: (context, state) =>
             PageTransitionManager.fadeTransition(HomeView()),
       ),
-      GoRoute(
-        path: kDistanceOff,
-        pageBuilder: (context, state) =>
-            PageTransitionManager.fadeTransition(const DistanceOffView()),
-      ),
+      // GoRoute(
+      //   path: kDistanceOff,
+      //   pageBuilder: (context, state) =>
+      //       PageTransitionManager.fadeTransition(const DistanceOffView()),
+      // ),
     ],
   );
 }
