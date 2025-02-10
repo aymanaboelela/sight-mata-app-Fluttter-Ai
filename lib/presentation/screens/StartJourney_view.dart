@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:sight_mate_app/core/constants/colors.dart';
-import 'package:sight_mate_app/core/utils/router/app_router.dart';
-import 'package:sight_mate_app/presentation/widgets/PopMenuListtile.dart';
 
 class StartJourney extends StatelessWidget {
   final Function() onTap;
