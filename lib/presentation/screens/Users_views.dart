@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sight_mate_app/core/constants/colors.dart';
 import 'package:sight_mate_app/presentation/widgets/AddAnotherUser.dart';
 import 'package:sight_mate_app/presentation/widgets/UserListtile.dart';
 

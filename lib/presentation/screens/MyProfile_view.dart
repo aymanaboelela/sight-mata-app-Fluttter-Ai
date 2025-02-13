@@ -27,42 +27,44 @@ class MyprofileView extends StatelessWidget {
               color: Colors.white, fontWeight: FontWeight.w600, fontSize: 18),
         ),
       ),
-      body: Column(
-        children: [
-          const MyPfrofileTextFormField(
-            label: "Name",
-            hintText: "maryem mahmoud",
-          ),
-          const MyPfrofileTextFormField(
-            label: "Phone Number",
-            hintText: "01129416459",
-          ),
-          const MyPfrofileTextFormField(
-            label: "Email",
-            hintText: "mamoudmaryem@gmail.com",
-          ),
-          const MyPfrofileTextFormField(
-            label: "Password",
-            hintText: "password",
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          const Padding(
-            padding: EdgeInsets.only(left: 250),
-            child: Text(
-              "Change Password",
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const MyPfrofileTextFormField(
+              label: "Name",
+              hintText: "maryem mahmoud",
             ),
-          ),
-          const SizedBox(
-            height: 50,
-          ),
-          Savebutton(onPressed: () {})
-        ],
+            const MyPfrofileTextFormField(
+              label: "Phone Number",
+              hintText: "01129416459",
+            ),
+            const MyPfrofileTextFormField(
+              label: "Email",
+              hintText: "mamoudmaryem@gmail.com",
+            ),
+            const MyPfrofileTextFormField(
+              label: "Password",
+              hintText: "password",
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            const Padding(
+              padding: EdgeInsets.only(left: 250),
+              child: Text(
+                "Change Password",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+            const SizedBox(
+              height: 50,
+            ),
+            Savebutton(onPressed: () {})
+          ],
+        ),
       ),
     );
   }
