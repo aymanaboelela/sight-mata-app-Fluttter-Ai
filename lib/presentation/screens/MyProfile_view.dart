@@ -64,16 +64,25 @@ class _MyprofileViewState extends State<MyprofileView> {
               child: Column(
                 children: [
                   MyPfrofileTextFormField(
+                    onChanged: (p0) {
+                      setState(() {});
+                    },
                     controller: nameController,
                     label: "Name",
                     hintText: CacheData.getData(key: userNameUser),
                   ),
                   MyPfrofileTextFormField(
+                    onChanged: (p0) {
+                      setState(() {});
+                    },
                     controller: phoneController,
                     label: "Phone Number",
                     hintText: CacheData.getData(key: phoneCahnged),
                   ),
                   MyPfrofileTextFormField(
+                    onChanged: (p0) {
+                      setState(() {});
+                    },
                     controller: emailController,
                     label: "Email",
                     hintText: CacheData.getData(key: emailChanged),
@@ -102,7 +111,8 @@ class _MyprofileViewState extends State<MyprofileView> {
                                     borderRadius: BorderRadius.circular(16),
                                   ),
                                   child: BlocProvider.value(
-                                    value: context.read<EditprofileCubit>(),
+                                    value: BlocProvider.of<EditprofileCubit>(
+                                        context),
                                     child: ChangepasswordView(),
                                   )),
                             );
@@ -121,12 +131,16 @@ class _MyprofileViewState extends State<MyprofileView> {
                   const SizedBox(
                     height: 50,
                   ),
-                  Savebutton(onPressed: () {
-                    context.read<EditprofileCubit>().updateProfile(
-                        newName: nameController?.text,
-                        newPhone: phoneController?.text,
-                        newEmail: emailController?.text);
-                  })
+                  nameController!.text.isEmpty &&
+                          phoneController!.text.isEmpty &&
+                          emailController!.text.isEmpty
+                      ? const SavebuttonOf()
+                      : Savebutton(onPressed: () {
+                          context.read<EditprofileCubit>().updateProfile(
+                              newName: nameController?.text,
+                              newPhone: phoneController?.text,
+                              newEmail: emailController?.text);
+                        }),
                 ],
               ),
             ),

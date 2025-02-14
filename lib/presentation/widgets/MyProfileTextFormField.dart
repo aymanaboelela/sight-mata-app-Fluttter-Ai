@@ -5,12 +5,13 @@ class MyPfrofileTextFormField extends StatelessWidget {
     super.key,
     required this.label,
     required this.hintText,
-    this.controller,  this.isValidator,
+    this.controller,  this.isValidator, this.onChanged,
   });
   final String label;
   final String hintText;
   final TextEditingController? controller;
   final bool ?isValidator;
+  final void Function(String)? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +37,7 @@ class MyPfrofileTextFormField extends StatelessWidget {
                 return null;
             },
             controller: controller,
+            onChanged: onChanged,
             decoration: InputDecoration(
                 hintText: hintText,
                 hintStyle: const TextStyle(fontSize: 14, color: Colors.grey),
