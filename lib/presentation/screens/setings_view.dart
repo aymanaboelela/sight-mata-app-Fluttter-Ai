@@ -15,23 +15,29 @@ class SettingsView extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 40),
       child: Column(
         children: [
-          Popmenulisttile(
+          InkWell(
             onTap: () => GoRouter.of(context).push(AppRouter.KMyProfileView),
-            title: "My Profile",
-            icon: Icons.person,
+            child: const Popmenulisttile(
+              title: "My Profile",
+              icon: Icons.person,
+            ),
           ),
-          Popmenulisttile(
+          InkWell(
             onTap: () => GoRouter.of(context).push(AppRouter.kAboutView),
-            title: "About",
-            icon: Icons.settings,
+            child: const Popmenulisttile(
+              title: "About",
+              icon: Icons.settings,
+            ),
           ),
-          Popmenulisttile(
+          InkWell(
             onTap: () {
               GoRouter.of(context).pushReplacement(AppRouter.kLoginView);
               context.read<AuthCubit>().signOut();
             },
-            title: "Logout",
-            icon: Icons.logout,
+            child: const Popmenulisttile(
+              title: "Logout",
+              icon: Icons.logout,
+            ),
           )
         ],
       ),

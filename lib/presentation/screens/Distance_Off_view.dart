@@ -20,6 +20,7 @@ class _DistanceOffViewState extends State<DistanceOffView> {
   TextEditingController? nameController = TextEditingController();
   TextEditingController? emailController = TextEditingController();
 
+  @override
   final formKey = GlobalKey<FormState>();
 
   Widget build(BuildContext context) {

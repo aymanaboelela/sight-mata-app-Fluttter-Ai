@@ -64,26 +64,21 @@ class _MainViewState extends State<MainView> {
               backgroundColor: AppColors.primaryBlueColor,
               title: Row(
                 children: [
-                  // _currentPage == 0
-                  //     ? Container()
-                  //     : IconButton(
-                  //         onPressed: () {
-                  //           if (dataList != null ||
-                  //               dataList!.isNotEmpty && _currentPage == 2) {
-                  //             controller.animateToPage(2,
-                  //                 duration: const Duration(milliseconds: 500),
-                  //                 curve: Curves.easeInOut);
-                  //           } else {
-                  //             controller.previousPage(
-                  //                 duration: const Duration(milliseconds: 500),
-                  //                 curve: Curves.easeIn);
-                  //           }
-                  //         },
-                  //         icon: const Icon(
-                  //           Icons.arrow_back_ios,
-                  //           color: Colors.white,
-                  //         ),
-                  //       ),
+                  _currentPage == 0 || _currentPage == 2
+                      ? Container()
+                      : IconButton(
+                          onPressed: () async {
+                            dataList =
+                                await context.read<DataCubit>().getData();
+                            controller.animateToPage(2,
+                                duration: const Duration(milliseconds: 500),
+                                curve: Curves.easeInOut);
+                          },
+                          icon: const Icon(
+                            Icons.arrow_back_ios,
+                            color: Colors.white,
+                          ),
+                        ),
                   const CircleAvatar(
                     radius: 20,
                     backgroundColor: Color(0xff94B2C8),
@@ -117,7 +112,7 @@ class _MainViewState extends State<MainView> {
               },
               children: [
                 Visibility(
-                  visible: state is GetDataLoading || dataList != null
+                  visible: state is GetDataLoading || dataList!.isNotEmpty
                       ? false
                       : true,
                   child: StartJourney(

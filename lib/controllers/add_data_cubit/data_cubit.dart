@@ -57,7 +57,16 @@ Future<List<DataModel> > getData() async {
   await supabase.auth.refreshSession();
   
   try {
-    final response = await supabase.from('addusersdata').select();
+      final user = supabase.auth.currentUser;
+      if (user == null) {
+        emit(GetDataError(message: "User is not authenticated."));
+      
+      }
+
+      final response = await supabase
+        .from('addusersdata')
+        .select()
+        .eq('userid',user!.id );
 
     if (response.isEmpty) {
       emit(GetDataEmpty());
