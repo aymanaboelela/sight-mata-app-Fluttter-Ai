@@ -1,6 +1,8 @@
 // import 'package:akodo_api/features/addHouse/presentation/controller/addhouse/add_house_stite.dart';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sight_mate_app/controllers/editprofile/editprofile_cubit.dart';
 import 'package:sight_mate_app/core/utils/router/page_transition.dart';
 import 'package:sight_mate_app/presentation/screens/About_view.dart';
 import 'package:sight_mate_app/presentation/screens/Help_View.dart';
@@ -21,7 +23,7 @@ abstract class AppRouter {
   static const KettingsView = '/SettingsView';
   static const kAboutView = '/AboutView';
   static const khelpView = '/khelpView';
-  
+
   // edit house
 
   static final router = GoRouter(
@@ -49,19 +51,24 @@ abstract class AppRouter {
       GoRoute(
         path: kDistanceOff,
         pageBuilder: (context, state) =>
-            PageTransitionManager.fadeTransition( DistanceOffView(onTap: () { },)),
+            PageTransitionManager.fadeTransition(DistanceOffView(
+          onTap: () {},
+        )),
       ),
-            GoRoute(
+      GoRoute(
         path: KMyProfileView,
         pageBuilder: (context, state) =>
-            PageTransitionManager.fadeTransition( MyprofileView()),
+            PageTransitionManager.fadeTransition(BlocProvider(
+          create: (context) => EditprofileCubit(),
+          child: MyprofileView(),
+        )),
       ),
-       GoRoute(
+      GoRoute(
         path: kAboutView,
         pageBuilder: (context, state) =>
-            PageTransitionManager.fadeTransition( AboutView()),
+            PageTransitionManager.fadeTransition(AboutView()),
       ),
-       GoRoute(
+      GoRoute(
         path: khelpView,
         pageBuilder: (context, state) =>
             PageTransitionManager.fadeTransition(HelpView()),

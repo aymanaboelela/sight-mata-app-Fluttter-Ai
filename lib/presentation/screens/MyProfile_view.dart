@@ -1,94 +1,138 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:sight_mate_app/controllers/editprofile/editprofile_cubit.dart';
+import 'package:sight_mate_app/core/constants/app_assets.dart';
 import 'package:sight_mate_app/core/constants/colors.dart';
+import 'package:sight_mate_app/core/constants/constans.dart';
+import 'package:sight_mate_app/core/helper/cach_data.dart';
 import 'package:sight_mate_app/presentation/screens/changePassword_view.dart';
 import 'package:sight_mate_app/presentation/widgets/MyProfileTextFormField.dart';
 import 'package:sight_mate_app/presentation/widgets/saveButton.dart';
 
-class MyprofileView extends StatelessWidget {
+class MyprofileView extends StatefulWidget {
   const MyprofileView({super.key});
 
   @override
+  State<MyprofileView> createState() => _MyprofileViewState();
+}
+
+class _MyprofileViewState extends State<MyprofileView> {
+  TextEditingController? nameController = TextEditingController();
+  TextEditingController? emailController = TextEditingController();
+  TextEditingController? phoneController = TextEditingController();
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: AppColors.primaryBlueColor,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: Colors.white,
-          ),
-        ),
-        title: const Text(
-          "My Profile",
-          style: TextStyle(
-              color: Colors.white, fontWeight: FontWeight.w600, fontSize: 18),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const MyPfrofileTextFormField(
-              label: "Name",
-              hintText: "maryem mahmoud",
-            ),
-            const MyPfrofileTextFormField(
-              label: "Phone Number",
-              hintText: "01129416459",
-            ),
-            const MyPfrofileTextFormField(
-              label: "Email",
-              hintText: "mamoudmaryem@gmail.com",
-            ),
-            const MyPfrofileTextFormField(
-              label: "Password",
-              hintText: "password",
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-             Padding(
-              padding: const EdgeInsets.only(left: 250),
-              child: GestureDetector(
-                onTap: () {
-                 showModalBottomSheet(
-  context: context,
-  isScrollControlled: true, // Makes it possible to control height
-  backgroundColor: Colors.transparent,
-  builder: (BuildContext context) {
-    return Align(
-      alignment: Alignment.center, // Moves it to the center
-      child: Container(
-        width: double.infinity,
-        height: 475,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: const ChangepasswordView()
-      ),
-    );
-  },
-);              },
-                child:const Text(
-                  "Change Password",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold),
+    return BlocConsumer<EditprofileCubit, EditprofileState>(
+      listener: (context, state) {
+        if (state is EditprofileSuccess) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("Profile Updated")));
+        } else if (state is EditprofileError) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(state.message)));
+        }
+      },
+      builder: (context, state) {
+        return ModalProgressHUD(
+          inAsyncCall: state is EditprofileLoading,
+          progressIndicator: Lottie.asset(AppAssets.loding, height: 150),
+          child: Scaffold(
+            appBar: AppBar(
+              centerTitle: true,
+              backgroundColor: AppColors.primaryBlueColor,
+              leading: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: const Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.white,
                 ),
               ),
+              title: const Text(
+                "My Profile",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 18),
+              ),
             ),
-            const SizedBox(
-              height: 50,
+            body: SingleChildScrollView(
+              child: Column(
+                children: [
+                  MyPfrofileTextFormField(
+                    controller: nameController,
+                    label: "Name",
+                    hintText: CacheData.getData(key: userNameUser),
+                  ),
+                  MyPfrofileTextFormField(
+                    controller: phoneController,
+                    label: "Phone Number",
+                    hintText: CacheData.getData(key: phoneCahnged),
+                  ),
+                  MyPfrofileTextFormField(
+                    controller: emailController,
+                    label: "Email",
+                    hintText: CacheData.getData(key: emailChanged),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 250),
+                    child: GestureDetector(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled:
+                              true, // Makes it possible to control height
+                          backgroundColor: Colors.transparent,
+                          builder: (BuildContext context) {
+                            return Align(
+                              alignment:
+                                  Alignment.center, // Moves it to the center
+                              child: Container(
+                                  width: double.infinity,
+                                  height: 475,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: BlocProvider.value(
+                                    value: context.read<EditprofileCubit>(),
+                                    child: ChangepasswordView(),
+                                  )),
+                            );
+                          },
+                        );
+                      },
+                      child: const Text(
+                        "Change Password",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 50,
+                  ),
+                  Savebutton(onPressed: () {
+                    context.read<EditprofileCubit>().updateProfile(
+                        newName: nameController?.text,
+                        newPhone: phoneController?.text,
+                        newEmail: emailController?.text);
+                  })
+                ],
+              ),
             ),
-            Savebutton(onPressed: () {})
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

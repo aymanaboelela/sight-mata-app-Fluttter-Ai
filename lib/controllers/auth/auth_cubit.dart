@@ -27,7 +27,8 @@ class AuthCubit extends Cubit<AuthState> {
       );
 
       if (response.user != null) {
-        CacheData.setData(key: userNameUser, value: userName);
+    
+
         emit(CreateSuccess());
       } else {
         emit(CreateError(message: "Unknown error occurred during signup"));
@@ -96,6 +97,10 @@ class AuthCubit extends Cubit<AuthState> {
       }
       CacheData.setData(
           key: userNameUser, value: response.user?.userMetadata?['username']);
+      CacheData.setData(
+          key: phoneCahnged, value: response.user?.userMetadata?['phone']);
+      CacheData.setData(key: emailChanged, value: email);
+
     } on AuthException catch (e) {
       log("login the error is **** ${e.message}");
 

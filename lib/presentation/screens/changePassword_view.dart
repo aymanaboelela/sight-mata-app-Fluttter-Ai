@@ -27,14 +27,12 @@ class ChangepasswordView extends StatelessWidget {
               const MyPfrofileTextFormField(
                 label: "Old Password",
                 hintText: "Enter Old Password",
+                isValidator: true,
               ),
               const MyPfrofileTextFormField(
+                isValidator: true,
                 label: "New Password",
                 hintText: 'Enter New Password',
-              ),
-              const MyPfrofileTextFormField(
-                label: "Confirm New Password",
-                hintText: "Confirm New Password",
               ),
               const SizedBox(
                 height: 35,
