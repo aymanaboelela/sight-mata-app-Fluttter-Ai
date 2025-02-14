@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sight_mate_app/controllers/auth/auth_cubit.dart';
 import 'package:sight_mate_app/core/utils/router/app_router.dart';
 import 'package:sight_mate_app/presentation/widgets/PopMenuListtile.dart';
 
@@ -17,41 +19,8 @@ class StartJourney extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 300),
-              child: PopupMenuButton<int>(
-                  icon: const Icon(Icons.more_horiz,
-                      size: 30), // Three-dot menu icon
-                  onSelected: (value) {
-                    if (value == 0) {
-                      GoRouter.of(context).pushReplacement(AppRouter.KMyProfileView);
-                    } else if (value == 1) {
-                      GoRouter.of(context).pushReplacement(AppRouter.KSettingsView);
-                    } else if (value == 2) {
-                      print("Logout clicked");
-                    }
-                  },
-                  itemBuilder: (context) => [
-                        const PopupMenuItem(
-                            value: 0,
-                            child: Popmenulisttile(
-                              title: "My Profile",
-                              icon: Icons.person,
-                            )),
-                        const PopupMenuItem(
-                            value: 1,
-                            child: Popmenulisttile(
-                              title: "Settings",
-                              icon: Icons.settings,
-                            )),
-                        const PopupMenuItem(
-                            value: 2,
-                            child: Popmenulisttile(
-                              title: "Logout",
-                              icon: Icons.logout,
-                            ))
-                      ]),
-            ),
+         
+            
             const SizedBox(
               height: 225,
             ),

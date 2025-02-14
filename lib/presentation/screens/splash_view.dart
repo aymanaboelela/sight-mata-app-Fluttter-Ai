@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sight_mate_app/core/constants/app_assets.dart';
 import 'package:sight_mate_app/core/constants/colors.dart';
 import 'package:sight_mate_app/core/utils/router/app_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -58,11 +59,10 @@ class _SplashViewbodyState extends State<SplashViewbody>
             builder: (context, _) => Opacity(
               opacity: _animation.value,
               child: Center(
-                child: Text(
-                  "Logo & Name",
-                  style: TextStyle(fontSize: 50.sp, color: Colors.white),
-                ),
-              ),
+                  child: Padding(
+                padding: const EdgeInsets.only(left: 35),
+                child: Image.asset(AppAssets.logo2),
+              )),
             ),
           ),
           const Spacer(),

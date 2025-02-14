@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:sight_mate_app/controllers/add_data_cubit/data_cubit.dart';
+import 'package:sight_mate_app/core/constants/app_assets.dart';
 import 'package:sight_mate_app/core/constants/colors.dart';
 import 'package:sight_mate_app/core/constants/constans.dart';
 import 'package:sight_mate_app/core/helper/cach_data.dart';
+import 'package:sight_mate_app/core/utils/router/app_router.dart';
+import 'package:sight_mate_app/models/data_mode.dart';
 import 'package:sight_mate_app/presentation/screens/Distance_Off_view.dart';
 
 import 'package:sight_mate_app/presentation/screens/StartJourney_view.dart';
@@ -21,91 +29,125 @@ class _MainViewState extends State<MainView> {
   @override
   void initState() {
     super.initState();
-    // تأجيل الوصول إلى controller.page حتى بعد بناء PageView
+    isData();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        _currentPage =
-            controller.page!.toInt(); // حفظ الصفحة الحالية بعد بناء PageView
+        _currentPage = controller.page!.toInt();
       });
     });
   }
 
+  void isData() async {
+    dataList = await context.read<DataCubit>().getData();
+
+    if (dataList != null && dataList!.isNotEmpty) {
+      controller.jumpToPage(2);
+      _currentPage = 0;
+
+      setState(() {});
+      print(dataList);
+    }
+  }
+
+  List<DataModel>? dataList;
   String name = CacheData.getData(key: userNameUser) ?? 'User';
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.primaryBlueColor,
-        title: Row(
-          children: [
-            _currentPage == 0
-                ? Container()
-                : IconButton(
-                    onPressed: () {
-                      controller.previousPage(
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.easeIn);
-                    },
-                    icon: const Icon(
-                      Icons.arrow_back_ios,
-                      color: Colors.white,
+    return BlocBuilder<DataCubit, DataState>(
+      builder: (context, state) {
+        return ModalProgressHUD(
+          inAsyncCall: state is GetDataLoading,
+          progressIndicator: Lottie.asset(AppAssets.loding, height: 150),
+          child: Scaffold(
+            appBar: AppBar(
+              backgroundColor: AppColors.primaryBlueColor,
+              title: Row(
+                children: [
+                  // _currentPage == 0
+                  //     ? Container()
+                  //     : IconButton(
+                  //         onPressed: () {
+                  //           if (dataList != null ||
+                  //               dataList!.isNotEmpty && _currentPage == 2) {
+                  //             controller.animateToPage(2,
+                  //                 duration: const Duration(milliseconds: 500),
+                  //                 curve: Curves.easeInOut);
+                  //           } else {
+                  //             controller.previousPage(
+                  //                 duration: const Duration(milliseconds: 500),
+                  //                 curve: Curves.easeIn);
+                  //           }
+                  //         },
+                  //         icon: const Icon(
+                  //           Icons.arrow_back_ios,
+                  //           color: Colors.white,
+                  //         ),
+                  //       ),
+                  const CircleAvatar(
+                    radius: 20,
+                    backgroundColor: Color(0xff94B2C8),
+                    child: Icon(
+                      Icons.person_outlined,
+                      color: Color(0xff7897AD),
+                      size: 25,
                     ),
                   ),
-            const CircleAvatar(
-              radius: 20,
-              backgroundColor: Color(0xff94B2C8),
-              child: Icon(
-                Icons.person_outlined,
-                color: Color(0xff7897AD),
-                size: 25,
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    name,
+                    style: const TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontFamily: 'Bahnschrift',
+                        fontWeight: FontWeight.bold),
+                  )
+                ],
               ),
             ),
-            const SizedBox(
-              width: 10,
+            body: PageView(
+              controller: controller,
+              physics: const NeverScrollableScrollPhysics(),
+              onPageChanged: (int page) {
+                setState(() {
+                  _currentPage = page;
+                });
+              },
+              children: [
+                Visibility(
+                  visible: state is GetDataLoading || dataList != null
+                      ? false
+                      : true,
+                  child: StartJourney(
+                    onTap: () {
+                      controller.animateToPage(1,
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.easeInOut);
+                    },
+                  ),
+                ),
+                DistanceOffView(
+                  onTap: () {
+                    controller.animateToPage(2,
+                        duration: const Duration(milliseconds: 500),
+                        curve: Curves.easeInOut);
+                  },
+                ),
+                UsersViews(
+                  data: dataList,
+                  onTap: () {
+                    controller.animateToPage(1,
+                        duration: const Duration(milliseconds: 500),
+                        curve: Curves.easeInOut);
+                  },
+                )
+              ],
             ),
-            Text(
-              name,
-              style: const TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
-                  fontFamily: 'Bahnschrift',
-                  fontWeight: FontWeight.bold),
-            )
-          ],
-        ),
-      ),
-      body: PageView(
-        controller: controller,
-        physics: const NeverScrollableScrollPhysics(),
-        onPageChanged: (int page) {
-          setState(() {
-            _currentPage = page; // تحديث الصفحة الحالية عند التغيير
-          });
-        },
-        children: [
-          StartJourney(
-            onTap: () {
-              controller.animateToPage(1,
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.easeInOut);
-            },
           ),
-          DistanceOffView(
-            onTap: () {
-              controller.animateToPage(2,
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.easeInOut);
-            },
-          ),
-          UsersViews(
-            onTap: () {
-              controller.animateToPage(4,
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.easeInOut);
-            },
-          )
-        ],
-      ),
+        );
+      },
     );
   }
 }

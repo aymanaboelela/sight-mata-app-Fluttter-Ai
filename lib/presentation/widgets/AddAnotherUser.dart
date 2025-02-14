@@ -5,17 +5,14 @@ class Addanotheruser extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  GestureDetector(
-    onTap: (){},
-      child: Container(
-        child: const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.person_add_alt_outlined,size: 40,color: Colors.grey,),
-            SizedBox(width: 10,),
-            Text("Add another One",style: TextStyle(color: Colors.grey,fontSize: 16,fontWeight: FontWeight.w500),),
-          ],
-        ),
+    return  Container(
+      child: const Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.person_add_alt_outlined,size: 40,color: Colors.grey,),
+          SizedBox(width: 10,),
+          Text("Add another One",style: TextStyle(color: Colors.grey,fontSize: 16,fontWeight: FontWeight.w500),),
+        ],
       ),
     );
   }
