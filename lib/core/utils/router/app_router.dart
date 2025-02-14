@@ -8,6 +8,7 @@ import 'package:sight_mate_app/presentation/screens/About_view.dart';
 import 'package:sight_mate_app/presentation/screens/Help_View.dart';
 import 'package:sight_mate_app/presentation/screens/Distance_Off_view.dart';
 import 'package:sight_mate_app/presentation/screens/MyProfile_view.dart';
+import 'package:sight_mate_app/presentation/screens/UserLocationNow_view.dart';
 import 'package:sight_mate_app/presentation/screens/create_acounte.dart';
 import 'package:sight_mate_app/presentation/screens/home_view.dart';
 import 'package:sight_mate_app/presentation/screens/login_view.dart';
@@ -23,6 +24,7 @@ abstract class AppRouter {
   static const KettingsView = '/SettingsView';
   static const kAboutView = '/AboutView';
   static const khelpView = '/khelpView';
+  static const kUserLocationNow = '/kUserLocationNow';
 
   // edit house
 
@@ -72,6 +74,11 @@ abstract class AppRouter {
         path: khelpView,
         pageBuilder: (context, state) =>
             PageTransitionManager.fadeTransition(HelpView()),
+      ),
+      GoRoute(
+        path: kUserLocationNow,
+        pageBuilder: (context, state) =>
+            PageTransitionManager.fadeTransition(UserlocationnowView()),
       ),
     ],
   );

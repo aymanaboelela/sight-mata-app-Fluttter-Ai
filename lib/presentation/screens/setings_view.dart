@@ -30,6 +30,13 @@ class SettingsView extends StatelessWidget {
             ),
           ),
           InkWell(
+            onTap: () => GoRouter.of(context).push(AppRouter.khelpView),
+            child: const Popmenulisttile(
+              title: "help",
+              icon: Icons.help,
+            ),
+          ),
+          InkWell(
             onTap: () {
               GoRouter.of(context).pushReplacement(AppRouter.kLoginView);
               context.read<AuthCubit>().signOut();
@@ -38,7 +45,8 @@ class SettingsView extends StatelessWidget {
               title: "Logout",
               icon: Icons.logout,
             ),
-          )
+          ),
+          
         ],
       ),
     );
