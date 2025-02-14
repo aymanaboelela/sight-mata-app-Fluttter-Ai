@@ -8,7 +8,7 @@ class HelpView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+appBar: AppBar(
         centerTitle: true,
         backgroundColor: AppColors.primaryBlueColor,
         leading: IconButton(

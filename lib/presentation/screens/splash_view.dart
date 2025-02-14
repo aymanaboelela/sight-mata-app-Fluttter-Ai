@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sight_mate_app/core/constants/app_assets.dart';
 import 'package:sight_mate_app/core/constants/colors.dart';

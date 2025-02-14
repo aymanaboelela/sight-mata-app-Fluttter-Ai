@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sight_mate_app/core/constants/colors.dart';
+import 'package:sight_mate_app/presentation/screens/changePassword_view.dart';
 import 'package:sight_mate_app/presentation/widgets/MyProfileTextFormField.dart';
 import 'package:sight_mate_app/presentation/widgets/saveButton.dart';
 
@@ -49,14 +50,36 @@ class MyprofileView extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            const Padding(
-              padding: EdgeInsets.only(left: 250),
-              child: Text(
-                "Change Password",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold),
+             Padding(
+              padding: const EdgeInsets.only(left: 250),
+              child: GestureDetector(
+                onTap: () {
+                 showModalBottomSheet(
+  context: context,
+  isScrollControlled: true, // Makes it possible to control height
+  backgroundColor: Colors.transparent,
+  builder: (BuildContext context) {
+    return Align(
+      alignment: Alignment.center, // Moves it to the center
+      child: Container(
+        width: double.infinity,
+        height: 475,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: const ChangepasswordView()
+      ),
+    );
+  },
+);              },
+                child:const Text(
+                  "Change Password",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold),
+                ),
               ),
             ),
             const SizedBox(
