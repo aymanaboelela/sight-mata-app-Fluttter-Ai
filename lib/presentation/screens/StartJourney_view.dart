@@ -15,8 +15,6 @@ class StartJourney extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-         
-            
             const SizedBox(
               height: 225,
             ),

@@ -6,6 +6,7 @@ import 'package:sight_mate_app/controllers/add_data_cubit/data_cubit.dart';
 import 'package:sight_mate_app/core/constants/app_assets.dart';
 import 'package:sight_mate_app/core/constants/colors.dart';
 import 'package:sight_mate_app/presentation/widgets/CustomTextFormField.dart';
+import 'package:sight_mate_app/presentation/widgets/Switched_ON.dart';
 import 'package:sight_mate_app/presentation/widgets/saveButton.dart';
 
 class DistanceOffView extends StatefulWidget {
@@ -113,7 +114,7 @@ class _DistanceOffViewState extends State<DistanceOffView> {
                                     ),
                                   ),
                                   AnimatedAlign(
-                                    duration: Duration(milliseconds: 100),
+                                    duration: const Duration(milliseconds: 100),
                                     curve: Curves.easeInOut,
                                     alignment: isSwitched
                                         ? Alignment.centerRight
@@ -143,6 +144,11 @@ class _DistanceOffViewState extends State<DistanceOffView> {
                           )
                         ],
                       ),
+
+                      isSwitched
+                          ? SwitchedOn()
+                          : SizedBox(), // if isSwitched is true, show SwitchedOn (there are inside it a slider and set distance from map) widget
+
                       const SizedBox(
                         height: 90,
                       ),

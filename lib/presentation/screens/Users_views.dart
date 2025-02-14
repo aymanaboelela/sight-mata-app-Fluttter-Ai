@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:sight_mate_app/controllers/add_data_cubit/data_cubit.dart';
 
 import 'package:sight_mate_app/models/data_mode.dart';

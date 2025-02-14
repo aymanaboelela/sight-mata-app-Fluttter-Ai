@@ -6,11 +6,9 @@ import 'package:sight_mate_app/presentation/screens/About_view.dart';
 import 'package:sight_mate_app/presentation/screens/Help_View.dart';
 import 'package:sight_mate_app/presentation/screens/Distance_Off_view.dart';
 import 'package:sight_mate_app/presentation/screens/MyProfile_view.dart';
-import 'package:sight_mate_app/presentation/screens/Settings_view.dart';
 import 'package:sight_mate_app/presentation/screens/create_acounte.dart';
 import 'package:sight_mate_app/presentation/screens/home_view.dart';
 import 'package:sight_mate_app/presentation/screens/login_view.dart';
-import 'package:sight_mate_app/presentation/screens/on_bording_view.dart';
 import 'package:sight_mate_app/presentation/screens/splash_view.dart';
 
 abstract class AppRouter {
@@ -20,7 +18,7 @@ abstract class AppRouter {
   static const kSignUp = '/signup';
   static const kDistanceOff = '/DistanceOff';
   static const KMyProfileView = '/MyProfileView';
-  static const KSettingsView = '/SettingsView';
+  static const KettingsView = '/SettingsView';
   static const kAboutView = '/AboutView';
   static const khelpView = '/khelpView';
   
@@ -37,11 +35,6 @@ abstract class AppRouter {
         path: kSignUp,
         pageBuilder: (context, state) =>
             PageTransitionManager.fadeTransition(const SignupView()),
-      ),
-      GoRoute(
-        path: kOnBoardingView,
-        pageBuilder: (context, state) =>
-            PageTransitionManager.fadeTransition(const OnBordingView()),
       ),
       GoRoute(
         path: kLoginView,
@@ -62,11 +55,6 @@ abstract class AppRouter {
         path: KMyProfileView,
         pageBuilder: (context, state) =>
             PageTransitionManager.fadeTransition( MyprofileView()),
-      ),
-      GoRoute(
-        path: KSettingsView,
-        pageBuilder: (context, state) =>
-            PageTransitionManager.fadeTransition( SettingsView()),
       ),
        GoRoute(
         path: kAboutView,
