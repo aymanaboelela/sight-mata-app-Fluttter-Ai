@@ -61,10 +61,7 @@ abstract class AppRouter {
       GoRoute(
         path: kMyProfileView,
         pageBuilder: (context, state) =>
-            PageTransitionManager.fadeTransition(BlocProvider(
-          create: (context) => EditprofileCubit(),
-          child: MyprofileView(),
-        )),
+            PageTransitionManager.fadeTransition(MyprofileView()),
       ),
       GoRoute(
         path: kAboutView,

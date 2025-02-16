@@ -94,27 +94,25 @@ class _MyprofileViewState extends State<MyprofileView> {
                     padding: const EdgeInsets.only(left: 250),
                     child: GestureDetector(
                       onTap: () {
+                        // تم تمرير BlocProvider للقيم بشكل صحيح
                         showModalBottomSheet(
                           context: context,
-                          isScrollControlled:
-                              true, // Makes it possible to control height
+                          // isScrollControlled:
+                          //     true, // Makes it possible to control height
                           backgroundColor: Colors.transparent,
                           builder: (BuildContext context) {
                             return Align(
                               alignment:
                                   Alignment.center, // Moves it to the center
                               child: Container(
-                                  width: double.infinity,
-                                  height: 475,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  child: BlocProvider.value(
-                                    value: BlocProvider.of<EditprofileCubit>(
-                                        context),
-                                    child: ChangepasswordView(),
-                                  )),
+                                width: double.infinity,
+                                // height: 475,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: ChangepasswordView(),
+                              ),
                             );
                           },
                         );
