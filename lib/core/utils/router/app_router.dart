@@ -21,8 +21,8 @@ abstract class AppRouter {
   static const kHomeView = '/homeview';
   static const kSignUp = '/signup';
   static const kDistanceOff = '/DistanceOff';
-  static const KMyProfileView = '/MyProfileView';
-  static const KettingsView = '/SettingsView';
+  static const kMyProfileView = '/MyProfileView';
+  static const kettingsView = '/SettingsView';
   static const kAboutView = '/AboutView';
   static const khelpView = '/khelpView';
   static const kUserLocationNow = '/kUserLocationNow';
@@ -59,7 +59,7 @@ abstract class AppRouter {
         )),
       ),
       GoRoute(
-        path: KMyProfileView,
+        path: kMyProfileView,
         pageBuilder: (context, state) =>
             PageTransitionManager.fadeTransition(BlocProvider(
           create: (context) => EditprofileCubit(),
