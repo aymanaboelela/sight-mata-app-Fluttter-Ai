@@ -10,10 +10,10 @@ class UserListtile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        GoRouter.of(context).pushReplacement(AppRouter.kUserLocationNow);
+        GoRouter.of(context).push(AppRouter.kUserLocationNow, extra: data);
       },
       child: Container(
-        margin: const EdgeInsets.only(bottom: 15, top: 20),
+        margin: const EdgeInsets.only(top: 15),
         decoration: BoxDecoration(
           color: const Color(0xffF7F7F7),
           border: Border.all(color: const Color(0xffBFC9D0), width: 1.2),

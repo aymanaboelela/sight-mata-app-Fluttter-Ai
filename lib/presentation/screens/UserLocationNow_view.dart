@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:sight_mate_app/core/constants/colors.dart';
+import 'package:sight_mate_app/core/constants/constans.dart';
+import 'package:sight_mate_app/core/helper/cach_data.dart';
 import 'package:sight_mate_app/presentation/widgets/DIstanceAlert.dart';
 import 'package:sight_mate_app/presentation/widgets/Switched_ON.dart';
 import 'package:sight_mate_app/presentation/widgets/saveButton.dart';
 
+import '../../models/data_mode.dart';
+
 class UserlocationnowView extends StatefulWidget {
-  const UserlocationnowView({super.key});
+  const UserlocationnowView({super.key, required this.data});
+  final DataModel data;
 
   @override
   State<UserlocationnowView> createState() => _UserlocationnowViewState();
@@ -15,29 +20,32 @@ class _UserlocationnowViewState extends State<UserlocationnowView> {
   bool isSwitched = false;
   @override
   Widget build(BuildContext context) {
+    String name = CacheData.getData(key: userNameUser);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () {},
-          icon: Icon(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
             Icons.arrow_back_ios,
             color: Colors.white,
           ),
         ),
         backgroundColor: AppColors.primaryBlueColor,
-        title: const Row(
+        title: Row(
           children: [
-            CircleAvatar(
+            const CircleAvatar(
               backgroundColor: Color(0xff94B2C8),
               child: Icon(Icons.person_2_outlined,
                   size: 30, color: Color(0xff7897AD)),
             ),
-            SizedBox(
+            const SizedBox(
               width: 10,
             ),
             Text(
-              "Hi, Basmala.",
-              style: TextStyle(
+              "Hi, $name",
+              style: const TextStyle(
                   color: Colors.white,
                   fontSize: 18,
                   fontWeight: FontWeight.bold),
@@ -59,22 +67,22 @@ class _UserlocationnowViewState extends State<UserlocationnowView> {
                   borderRadius: BorderRadius.circular(10),
                   color: Color(0xff5484A7),
                 ),
-                child: const Text(
-                  "Maryem",
-                  style: TextStyle(color: Colors.white, fontSize: 17),
+                child: Text(
+                  widget.data.username,
+                  style: const TextStyle(color: Colors.white, fontSize: 17),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
-              const Row(
+              Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.location_on,
                     size: 40,
                     color: Colors.black,
                   ),
-                  Text(
+                  const Text(
                     "Show ",
                     style: TextStyle(
                         color: Colors.black,
@@ -82,14 +90,14 @@ class _UserlocationnowViewState extends State<UserlocationnowView> {
                         fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    "Maryem's ",
-                    style: TextStyle(
+                    widget.data.username,
+                    style: const TextStyle(
                         color: AppColors.primaryBlueColor,
                         fontSize: 17,
                         fontWeight: FontWeight.bold),
                   ),
-                  Text(
-                    "Location Now",
+                  const Text(
+                    " Location Now",
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 17,
@@ -148,7 +156,8 @@ class _UserlocationnowViewState extends State<UserlocationnowView> {
                               child: Text(
                                 isSwitched ? "on" : "off",
                                 style: TextStyle(
-                                  color: isSwitched ? Colors.white : Colors.black,
+                                  color:
+                                      isSwitched ? Colors.white : Colors.black,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -182,21 +191,19 @@ class _UserlocationnowViewState extends State<UserlocationnowView> {
                     color: Colors.grey,
                     size: 40,
                   ),
-          
                   const SizedBox(
                     height: 90,
                   ),
                 ],
               ),
               isSwitched
-                          ? SwitchedOn()
-                          : SizedBox(), // if isSwitched is true, show SwitchedOn (there are inside it a slider and set distance from map) widget
+                  ? SwitchedOn()
+                  : SizedBox(), // if isSwitched is true, show SwitchedOn (there are inside it a slider and set distance from map) widget
 
-                      const SizedBox(
-                        height: 90,
-                      ),
-                      Center(child: Savebutton(onPressed: (){}))
-                      
+              const SizedBox(
+                height: 90,
+              ),
+              Center(child: Savebutton(onPressed: () {}))
             ],
           ),
         ),

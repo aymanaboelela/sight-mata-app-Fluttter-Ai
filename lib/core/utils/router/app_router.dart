@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sight_mate_app/controllers/editprofile/editprofile_cubit.dart';
 import 'package:sight_mate_app/core/utils/router/page_transition.dart';
+import 'package:sight_mate_app/models/data_mode.dart';
 import 'package:sight_mate_app/presentation/screens/About_view.dart';
 import 'package:sight_mate_app/presentation/screens/Help_View.dart';
 import 'package:sight_mate_app/presentation/screens/Distance_Off_view.dart';
@@ -76,10 +77,13 @@ abstract class AppRouter {
             PageTransitionManager.fadeTransition(HelpView()),
       ),
       GoRoute(
-        path: kUserLocationNow,
-        pageBuilder: (context, state) =>
-            PageTransitionManager.fadeTransition(UserlocationnowView()),
-      ),
+          path: kUserLocationNow,
+          pageBuilder: (context, state) {
+            final data = state.extra as DataModel;
+            return PageTransitionManager.fadeTransition(UserlocationnowView(
+              data: data,
+            ));
+          }),
     ],
   );
 }
