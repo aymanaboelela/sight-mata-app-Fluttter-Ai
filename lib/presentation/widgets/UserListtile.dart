@@ -10,7 +10,7 @@ class UserListtile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        GoRouter.of(context).pushReplacement(AppRouter.kSignUp);
+        GoRouter.of(context).pushReplacement(AppRouter.kUserLocationNow);
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 15, top: 20),
