@@ -36,31 +36,36 @@ class _UsersViewsState extends State<UsersViews> {
         }
       },
       builder: (context, state) {
-        return Padding(
-          padding: EdgeInsets.only(top: 10),
-          child: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return UserListtile(
-                      data: data[index],
-                    );
-                  },
-                  itemCount: data.length,
-                ),
-                const SizedBox(height: 20),
-                GestureDetector(
-                    onTap: () {
-                      widget.onTap();
+        return RefreshIndicator(
+          onRefresh: () {
+            return context.read<DataCubit>().getData();
+          },
+          child: Padding(
+            padding: EdgeInsets.only(top: 10),
+            child: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return UserListtile(
+                        data: data[index],
+                      );
                     },
-                    child: const Addanotheruser()),
-                const SizedBox(height: 75),
-              ],
+                    itemCount: data.length,
+                  ),
+                  const SizedBox(height: 20),
+                  GestureDetector(
+                      onTap: () {
+                        widget.onTap();
+                      },
+                      child: const Addanotheruser()),
+                  const SizedBox(height: 75),
+                ],
+              ),
             ),
           ),
         );
