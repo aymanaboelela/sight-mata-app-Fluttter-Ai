@@ -9,6 +9,7 @@ import 'package:sight_mate_app/core/constants/app_assets.dart';
 import 'package:sight_mate_app/core/utils/router/app_router.dart';
 import 'package:sight_mate_app/presentation/widgets/CustomButton.dart';
 import 'package:sight_mate_app/presentation/widgets/CustomTextFormField.dart';
+import 'package:sight_mate_app/presentation/widgets/UserType.dart';
 
 class SignupView extends StatefulWidget {
   const SignupView({super.key});
@@ -68,7 +69,9 @@ class _SignupScreenState extends State<SignupView> {
                 padding: const EdgeInsets.only(top: 60, left: 25, right: 25),
                 child: SingleChildScrollView(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+
                       const Center(
                         child: Text("Sign Up",
                             style: TextStyle(
@@ -87,7 +90,7 @@ class _SignupScreenState extends State<SignupView> {
                         prefixIcon: Icons.person_2_outlined,
                       ),
                       const SizedBox(
-                        height: 30,
+                        height: 20,
                       ),
                       Customtextformfield(
                         keyboardType: TextInputType.number,
@@ -97,7 +100,7 @@ class _SignupScreenState extends State<SignupView> {
                         prefixIcon: Icons.lock_outlined,
                       ),
                       const SizedBox(
-                        height: 30,
+                        height: 20,
                       ),
                       Customtextformfield(
                         controller: emailController,
@@ -106,7 +109,7 @@ class _SignupScreenState extends State<SignupView> {
                         prefixIcon: Icons.email_outlined,
                       ),
                       const SizedBox(
-                        height: 30,
+                        height: 20,
                       ),
                       Customtextformfield(
                         validator: (p0) {
@@ -129,7 +132,7 @@ class _SignupScreenState extends State<SignupView> {
                         },
                       ),
                       const SizedBox(
-                        height: 30,
+                        height: 20,
                       ),
                       Customtextformfield(
                         validator: (p0) {
@@ -152,8 +155,10 @@ class _SignupScreenState extends State<SignupView> {
                         },
                       ),
                       const SizedBox(
-                        height: 50,
+                        height: 40,
                       ),
+                     const  Usertype(),    //toggle button to determine user Type
+                    const  SizedBox(height:20,),
                       Custombottom(
                           text: "Create Account",
                           onpressed: () {
@@ -166,7 +171,7 @@ class _SignupScreenState extends State<SignupView> {
                             }
                           }),
                       const SizedBox(
-                        height: 25,
+                        height: 20,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,

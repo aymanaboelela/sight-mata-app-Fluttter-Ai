@@ -18,7 +18,8 @@ class _UserlocationnowViewState extends State<UserlocationnowView> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () {},
+          onPressed: () {
+          },
           icon: Icon(
             Icons.arrow_back_ios,
             color: Colors.white,
@@ -148,7 +149,8 @@ class _UserlocationnowViewState extends State<UserlocationnowView> {
                               child: Text(
                                 isSwitched ? "on" : "off",
                                 style: TextStyle(
-                                  color: isSwitched ? Colors.white : Colors.black,
+                                  color:
+                                      isSwitched ? Colors.white : Colors.black,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -182,21 +184,19 @@ class _UserlocationnowViewState extends State<UserlocationnowView> {
                     color: Colors.grey,
                     size: 40,
                   ),
-          
                   const SizedBox(
                     height: 90,
                   ),
                 ],
               ),
               isSwitched
-                          ? SwitchedOn()
-                          : SizedBox(), // if isSwitched is true, show SwitchedOn (there are inside it a slider and set distance from map) widget
+                  ? SwitchedOn()
+                  : SizedBox(), // if isSwitched is true, show SwitchedOn (there are inside it a slider and set distance from map) widget
 
-                      const SizedBox(
-                        height: 90,
-                      ),
-                      Center(child: Savebutton(onPressed: (){}))
-                      
+              const SizedBox(
+                height: 90,
+              ),
+              Center(child: Savebutton(onPressed: () {}))
             ],
           ),
         ),
