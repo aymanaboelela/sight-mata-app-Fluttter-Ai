@@ -17,9 +17,10 @@ class DistanceOffView extends StatefulWidget {
 }
 
 class _DistanceOffViewState extends State<DistanceOffView> {
-  bool isSwitched = false; // Initial state
+  bool isSwitched = false;
   TextEditingController? nameController = TextEditingController();
   TextEditingController? emailController = TextEditingController();
+  double ?distance ;
 
   @override
   // ignore: override_on_non_overriding_member
@@ -146,8 +147,12 @@ class _DistanceOffViewState extends State<DistanceOffView> {
                       ),
 
                       isSwitched
-                          ? SwitchedOn()
-                          : SizedBox(), // if isSwitched is true, show SwitchedOn (there are inside it a slider and set distance from map) widget
+                          ? SwitchedOn(
+                              onChanged: (p0) {
+                                distance = p0;
+                              },
+                            )
+                          : const SizedBox(), // if isSwitched is true, show SwitchedOn (there are inside it a slider and set distance from map) widget
 
                       const SizedBox(
                         height: 90,
@@ -158,7 +163,7 @@ class _DistanceOffViewState extends State<DistanceOffView> {
                             context.read<DataCubit>().addData(
                                 name: nameController!.text,
                                 email: emailController!.text,
-                                distance: 10,
+                                distance: distance,
                                 lat: 10,
                                 lon: 10);
                           }

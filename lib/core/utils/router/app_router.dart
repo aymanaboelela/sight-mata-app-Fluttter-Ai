@@ -4,7 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sight_mate_app/controllers/editprofile/editprofile_cubit.dart';
 import 'package:sight_mate_app/core/utils/router/page_transition.dart';
+import 'package:sight_mate_app/models/data_mode.dart';
 import 'package:sight_mate_app/presentation/screens/About_view.dart';
+import 'package:sight_mate_app/presentation/screens/BLindHome_View.dart';
 import 'package:sight_mate_app/presentation/screens/Help_View.dart';
 import 'package:sight_mate_app/presentation/screens/Distance_Off_view.dart';
 import 'package:sight_mate_app/presentation/screens/MyProfile_view.dart';
@@ -20,11 +22,13 @@ abstract class AppRouter {
   static const kHomeView = '/homeview';
   static const kSignUp = '/signup';
   static const kDistanceOff = '/DistanceOff';
-  static const KMyProfileView = '/MyProfileView';
-  static const KettingsView = '/SettingsView';
+  static const kMyProfileView = '/MyProfileView';
+  static const kettingsView = '/SettingsView';
   static const kAboutView = '/AboutView';
   static const khelpView = '/khelpView';
   static const kUserLocationNow = '/kUserLocationNow';
+    static const KBLindHomeView = '/BLindHomeView';
+
 
   // edit house
 
@@ -58,12 +62,9 @@ abstract class AppRouter {
         )),
       ),
       GoRoute(
-        path: KMyProfileView,
+        path: kMyProfileView,
         pageBuilder: (context, state) =>
-            PageTransitionManager.fadeTransition(BlocProvider(
-          create: (context) => EditprofileCubit(),
-          child: MyprofileView(),
-        )),
+            PageTransitionManager.fadeTransition(MyprofileView()),
       ),
       GoRoute(
         path: kAboutView,
@@ -75,11 +76,19 @@ abstract class AppRouter {
         pageBuilder: (context, state) =>
             PageTransitionManager.fadeTransition(HelpView()),
       ),
-      GoRoute(
-        path: kUserLocationNow,
+       GoRoute(
+        path: KBLindHomeView,
         pageBuilder: (context, state) =>
-            PageTransitionManager.fadeTransition(UserlocationnowView()),
+            PageTransitionManager.fadeTransition(HomeBlindView()),
       ),
+      GoRoute(
+          path: kUserLocationNow,
+          pageBuilder: (context, state) {
+            final data = state.extra as DataModel;
+            return PageTransitionManager.fadeTransition(UserlocationnowView(
+              data: data,
+            ));
+          }),
     ],
   );
 }

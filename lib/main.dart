@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sight_mate_app/controllers/add_data_cubit/data_cubit.dart';
 import 'package:sight_mate_app/controllers/auth/auth_cubit.dart';
+import 'package:sight_mate_app/controllers/editprofile/editprofile_cubit.dart';
 import 'package:sight_mate_app/core/constants/constans.dart';
 import 'package:sight_mate_app/core/helper/cach_data.dart';
 import 'package:sight_mate_app/core/helper/simple_bloc_observer.dart';
@@ -43,6 +44,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<DataCubit>(
           create: (context) => DataCubit(),
+        ),
+        BlocProvider<EditprofileCubit>(
+          create: (context) => EditprofileCubit(),
         ),
       ],
       child: ScreenUtilInit(

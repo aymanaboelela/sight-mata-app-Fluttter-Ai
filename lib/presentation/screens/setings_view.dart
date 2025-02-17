@@ -16,7 +16,7 @@ class SettingsView extends StatelessWidget {
       child: Column(
         children: [
           InkWell(
-            onTap: () => GoRouter.of(context).push(AppRouter.KMyProfileView),
+            onTap: () => GoRouter.of(context).push(AppRouter.kMyProfileView),
             child: const Popmenulisttile(
               title: "My Profile",
               icon: Icons.person,
@@ -46,7 +46,6 @@ class SettingsView extends StatelessWidget {
               icon: Icons.logout,
             ),
           ),
-          
         ],
       ),
     );

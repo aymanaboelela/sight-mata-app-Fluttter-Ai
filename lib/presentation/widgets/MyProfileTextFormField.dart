@@ -5,12 +5,15 @@ class MyPfrofileTextFormField extends StatelessWidget {
     super.key,
     required this.label,
     required this.hintText,
-    this.controller,  this.isValidator, this.onChanged,
+    this.controller,
+    this.validator,
+    this.onChanged,
   });
+
   final String label;
   final String hintText;
   final TextEditingController? controller;
-  final bool ?isValidator;
+  final String? Function(String?)? validator;
   final void Function(String)? onChanged;
 
   @override
@@ -22,34 +25,34 @@ class MyPfrofileTextFormField extends StatelessWidget {
         children: [
           Text(
             label,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
           ),
           const SizedBox(
-            height: 5,
+            height: 8,
           ),
           TextFormField(
-            validator: (value) {
-              if (isValidator == true) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
-                }
-              } else
-                return null;
-            },
             controller: controller,
             onChanged: onChanged,
+            validator: validator,
+            obscureText: label.toLowerCase().contains('password'), // Hide password text
             decoration: InputDecoration(
-                hintText: hintText,
-                hintStyle: const TextStyle(fontSize: 14, color: Colors.grey),
-                enabledBorder: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(12)),
-                  borderSide: BorderSide(color: Color(0xffD5D5D5)),
-                ),
-                focusedBorder: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(12)),
-                  borderSide: BorderSide(color: Colors.black),
-                )),
-          )
+              hintText: hintText,
+              hintStyle: const TextStyle(fontSize: 14, color: Colors.grey),
+              contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+              enabledBorder: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+                borderSide: BorderSide(color: Color(0xffD5D5D5)),
+              ),
+              focusedBorder: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+                borderSide: BorderSide(color: Colors.blue, width: 2),
+              ),
+              border: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+              ),
+            ),
+          ),
         ],
       ),
     );

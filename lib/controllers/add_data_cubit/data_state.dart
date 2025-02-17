@@ -27,3 +27,12 @@ class GetDataError extends DataState {
   final String message;
   GetDataError({required this.message});
 }
+
+class UpdateDataLoading extends DataState {}
+
+class UpdateDataSuccess extends DataState {}
+
+class UpdateDataError extends DataState {
+  final String message;
+  UpdateDataError({required this.message});
+}

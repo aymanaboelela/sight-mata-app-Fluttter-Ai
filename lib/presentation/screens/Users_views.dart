@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sight_mate_app/controllers/add_data_cubit/data_cubit.dart';
+import 'package:sight_mate_app/core/utils/router/app_router.dart';
 
 import 'package:sight_mate_app/models/data_mode.dart';
 import 'package:sight_mate_app/presentation/widgets/AddAnotherUser.dart';
@@ -36,31 +38,59 @@ class _UsersViewsState extends State<UsersViews> {
         }
       },
       builder: (context, state) {
-        return Padding(
-          padding: EdgeInsets.only(top: 10),
-          child: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return UserListtile(
-                      data: data[index],
-                    );
-                  },
-                  itemCount: data.length,
-                ),
-                const SizedBox(height: 20),
-                GestureDetector(
-                    onTap: () {
-                      widget.onTap();
+        return RefreshIndicator(
+          onRefresh: () {
+            return context.read<DataCubit>().getData();
+          },
+          child: Padding(
+            padding: EdgeInsets.only(top: 10),
+            child: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return UserListtile(
+                        data: data[index],
+                      );
                     },
-                    child: const Addanotheruser()),
-                const SizedBox(height: 75),
-              ],
+                    itemCount: data.length,
+                  ),
+                  const SizedBox(height: 20),
+                  GestureDetector(
+                      onTap: () {
+                        widget.onTap();
+                      },
+                      child: const Addanotheruser()),
+                  const SizedBox(height: 100),
+
+
+
+
+
+
+
+
+
+                  GestureDetector(
+                    onTap: () {
+                      GoRouter.of(context).pushReplacement(AppRouter.KBLindHomeView);
+                    },
+                    child: Container(
+                      color: Colors.red,
+                      width: 200,
+                      height: 50,
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Temporary Button\n    For BLind User",
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         );

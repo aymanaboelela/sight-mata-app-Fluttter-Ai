@@ -1,27 +1,28 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sight_mate_app/controllers/add_data_cubit/data_cubit.dart';
 import 'package:sight_mate_app/core/constants/colors.dart';
+import 'package:sight_mate_app/presentation/screens/BLindLocation_View.dart';
+import 'package:sight_mate_app/presentation/screens/BLindSettings_View.dart';
+import 'package:sight_mate_app/presentation/screens/BlindCamera_view.dart';
 import 'package:sight_mate_app/presentation/screens/Location_view.dart';
 import 'package:sight_mate_app/presentation/screens/Notification_view.dart';
 import 'package:sight_mate_app/presentation/screens/main_View.dart';
 import 'package:sight_mate_app/presentation/screens/setings_view.dart';
 
-class HomeView extends StatefulWidget {
+class HomeBlindView extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeView> {
+class _HomeScreenState extends State<HomeBlindView> {
   int _page = 0;
 
   // List of screens to switch between
   final List<Widget> _screens = [
-    const MainView(),
-    LocationView(),
-    NotificationView(),
-    const SettingsView(),
+    BLindHome_View(),
+    BlindlocationView(),
+    BlindsettingsView(),
+
   ];
 
   @override
@@ -33,10 +34,9 @@ class _HomeScreenState extends State<HomeView> {
         color: AppColors.primaryBlueColor,
         height: 60,
         items: const [
-          Icon(Icons.home, size: 30, color: Colors.white),
-          Icon(Icons.location_on, size: 30, color: Colors.white),
-          Icon(Icons.notifications, size: 30, color: Colors.white),
-          Icon(Icons.settings, size: 30, color: Colors.white),
+          Icon(Icons.camera_alt_outlined, size: 35, color: Colors.white),
+          Icon(Icons.location_on, size: 35, color: Colors.white),
+          Icon(Icons.settings, size: 35, color: Colors.white),
         ],
         index: _page, // Set the initial selected index
         onTap: (index) {
