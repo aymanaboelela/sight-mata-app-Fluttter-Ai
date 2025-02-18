@@ -4,11 +4,6 @@ import 'package:sight_mate_app/core/constants/colors.dart';
 import 'package:sight_mate_app/presentation/screens/BLindLocation_View.dart';
 import 'package:sight_mate_app/presentation/screens/BLindSettings_View.dart';
 import 'package:sight_mate_app/presentation/screens/BlindCamera_view.dart';
-import 'package:sight_mate_app/presentation/screens/Location_view.dart';
-import 'package:sight_mate_app/presentation/screens/Notification_view.dart';
-import 'package:sight_mate_app/presentation/screens/main_View.dart';
-import 'package:sight_mate_app/presentation/screens/setings_view.dart';
-
 class HomeBlindView extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();

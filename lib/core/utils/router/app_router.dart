@@ -7,6 +7,7 @@ import 'package:sight_mate_app/core/utils/router/page_transition.dart';
 import 'package:sight_mate_app/models/data_mode.dart';
 import 'package:sight_mate_app/presentation/screens/About_view.dart';
 import 'package:sight_mate_app/presentation/screens/BLindHome_View.dart';
+import 'package:sight_mate_app/presentation/screens/GeneralSettings.dart';
 import 'package:sight_mate_app/presentation/screens/Help_View.dart';
 import 'package:sight_mate_app/presentation/screens/Distance_Off_view.dart';
 import 'package:sight_mate_app/presentation/screens/MyProfile_view.dart';
@@ -28,6 +29,7 @@ abstract class AppRouter {
   static const khelpView = '/khelpView';
   static const kUserLocationNow = '/kUserLocationNow';
     static const KBLindHomeView = '/BLindHomeView';
+    static const KGeneralSettings = '/GeneralSettings';
 
 
   // edit house
@@ -80,6 +82,11 @@ abstract class AppRouter {
         path: KBLindHomeView,
         pageBuilder: (context, state) =>
             PageTransitionManager.fadeTransition(HomeBlindView()),
+      ),
+        GoRoute(
+        path: KGeneralSettings,
+        pageBuilder: (context, state) =>
+            PageTransitionManager.fadeTransition(Generalsettings()),
       ),
       GoRoute(
           path: kUserLocationNow,

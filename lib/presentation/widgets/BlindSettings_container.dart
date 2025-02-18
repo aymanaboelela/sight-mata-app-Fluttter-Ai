@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class BlindsettingsContainer extends StatelessWidget {
-  const BlindsettingsContainer({super.key, required this.title, required this.icone, this.ontap});
+  const BlindsettingsContainer({super.key, required this.title, required this.image, this.ontap});
   final String title;
-  final IconData icone;
+  final String image;
   final VoidCallback? ontap;
 
 
@@ -12,7 +12,8 @@ class BlindsettingsContainer extends StatelessWidget {
     return  GestureDetector(
       onTap: ontap,
       child: Container(
-        height: 55,
+        margin:const  EdgeInsets.only(bottom: 15),
+        height: 50,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: const Color(0xffBFD1DE)
@@ -20,9 +21,9 @@ class BlindsettingsContainer extends StatelessWidget {
         child:  Row(
           children: [
             const SizedBox(width: 10,),
-          Icon(icone,size: 30,color: Colors.black,),
+            Image(image: AssetImage(image)),
          const  SizedBox(width: 20,),
-          Text(title,style:const  TextStyle(color: Colors.black,fontSize:17,fontWeight: FontWeight.w500)),
+          Text(title,style:const  TextStyle(color: Colors.black,fontSize:17,fontWeight: FontWeight.bold)),
       
       
         ],),
