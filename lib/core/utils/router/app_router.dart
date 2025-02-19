@@ -15,6 +15,7 @@ import 'package:sight_mate_app/presentation/screens/UserLocationNow_view.dart';
 import 'package:sight_mate_app/presentation/screens/create_acounte.dart';
 import 'package:sight_mate_app/presentation/screens/home_view.dart';
 import 'package:sight_mate_app/presentation/screens/login_view.dart';
+import 'package:sight_mate_app/presentation/screens/on_bording_view.dart';
 import 'package:sight_mate_app/presentation/screens/splash_view.dart';
 
 abstract class AppRouter {
@@ -45,6 +46,11 @@ abstract class AppRouter {
         path: kSignUp,
         pageBuilder: (context, state) =>
             PageTransitionManager.fadeTransition(const SignupView()),
+      ),
+      GoRoute(
+        path: kOnBoardingView,
+        pageBuilder: (context, state) =>
+            PageTransitionManager.fadeTransition(const OnBordingView()),
       ),
       GoRoute(
         path: kLoginView,

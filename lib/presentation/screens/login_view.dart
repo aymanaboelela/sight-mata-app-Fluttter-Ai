@@ -5,6 +5,8 @@ import 'package:lottie/lottie.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:sight_mate_app/controllers/auth/auth_cubit.dart';
 import 'package:sight_mate_app/core/constants/app_assets.dart';
+import 'package:sight_mate_app/core/constants/cach_data_const.dart';
+import 'package:sight_mate_app/core/helper/cach_data.dart';
 import 'package:sight_mate_app/core/utils/router/app_router.dart';
 import 'package:sight_mate_app/presentation/widgets/CustomButton.dart';
 import 'package:sight_mate_app/presentation/widgets/CustomTextFormField.dart';
@@ -26,8 +28,14 @@ class _LoginScreenState extends State<LoginView> {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is LoginSuccess) {
-          GoRouter.of(context).pushReplacement(AppRouter.kHomeView);
-          
+          if(CacheData.getData(key: AppCacheData.isAdmin) == true)
+          {
+ GoRouter.of(context).pushReplacement(AppRouter.kHomeView);
+          }
+          else{
+ GoRouter.of(context).pushReplacement(AppRouter.KBLindHomeView);
+          }
+         
         } else if (state is LoginError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.message)),

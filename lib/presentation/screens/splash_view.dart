@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sight_mate_app/core/constants/app_assets.dart';
+import 'package:sight_mate_app/core/constants/cach_data_const.dart';
 import 'package:sight_mate_app/core/constants/colors.dart';
+import 'package:sight_mate_app/core/constants/constans.dart';
+import 'package:sight_mate_app/core/helper/cach_data.dart';
 import 'package:sight_mate_app/core/utils/router/app_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -39,6 +42,9 @@ class _SplashViewbodyState extends State<SplashViewbody>
     });
   }
 
+  final bool _hasSeenOnboarding =
+      CacheData.getData(key: AppCacheData.isOnBordingFinshed) ?? false;
+  final bool isAdmin = CacheData.getData(key: AppCacheData.isAdmin) ?? false;
   @override
   void dispose() {
     _animationController.dispose();
@@ -72,17 +78,19 @@ class _SplashViewbodyState extends State<SplashViewbody>
 
   /// Navigates to the correct screen after 3 seconds
   void _goToNewScreen() {
-    Future.delayed(
-      const Duration(seconds: 3),
-      () {
-        final session = Supabase.instance.client.auth.currentSession;
-
-        if (session != null) {
-          GoRouter.of(context).pushReplacement(AppRouter.kHomeView);
+    Future.delayed(const Duration(seconds: 3), () {
+      final session = Supabase.instance.client.auth.currentSession;
+      if (_hasSeenOnboarding == false) {
+        GoRouter.of(context).pushReplacement(AppRouter.kOnBoardingView);
+      } else if (session != null) {
+        if (isAdmin == false) {
+          GoRouter.of(context).pushReplacement(AppRouter.KBLindHomeView);
         } else {
-          GoRouter.of(context).pushReplacement(AppRouter.kLoginView);
+          GoRouter.of(context).pushReplacement(AppRouter.kHomeView);
         }
-      },
-    );
+      } else {
+        GoRouter.of(context).pushReplacement(AppRouter.kLoginView);
+      }
+    });
   }
 }

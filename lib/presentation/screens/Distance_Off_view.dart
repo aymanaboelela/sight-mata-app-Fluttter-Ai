@@ -20,7 +20,7 @@ class _DistanceOffViewState extends State<DistanceOffView> {
   bool isSwitched = false;
   TextEditingController? nameController = TextEditingController();
   TextEditingController? emailController = TextEditingController();
-  double ?distance ;
+  double? distance;
 
   @override
   // ignore: override_on_non_overriding_member
@@ -96,26 +96,8 @@ class _DistanceOffViewState extends State<DistanceOffView> {
                               child: Stack(
                                 alignment: Alignment.center,
                                 children: [
-                                  Align(
-                                    alignment: isSwitched
-                                        ? Alignment.centerRight
-                                        : Alignment.centerLeft,
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 5.0),
-                                      child: Text(
-                                        isSwitched ? "on" : "off",
-                                        style: TextStyle(
-                                          color: isSwitched
-                                              ? Colors.white
-                                              : Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
                                   AnimatedAlign(
-                                    duration: const Duration(milliseconds: 100),
+                                    duration: const Duration(milliseconds: 200),
                                     curve: Curves.easeInOut,
                                     alignment: isSwitched
                                         ? Alignment.centerRight
@@ -128,6 +110,25 @@ class _DistanceOffViewState extends State<DistanceOffView> {
                                       decoration: const BoxDecoration(
                                         shape: BoxShape.circle,
                                         color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: isSwitched
+                                        ? Alignment.centerRight
+                                        : Alignment.centerLeft,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 5.0),
+                                      child: Text(
+                                        isSwitched ? "on" : "off",
+                                        style: TextStyle(
+                                          color: isSwitched
+                                              ? Colors.black
+                                              : Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12,
+                                        ),
                                       ),
                                     ),
                                   ),

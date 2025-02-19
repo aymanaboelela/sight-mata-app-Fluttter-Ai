@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:sight_mate_app/core/constants/cach_data_const.dart';
 import 'package:sight_mate_app/core/constants/constans.dart';
 import 'package:sight_mate_app/core/helper/cach_data.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -16,19 +17,22 @@ class AuthCubit extends Cubit<AuthState> {
     required String password,
     required String userName,
     required String phone,
+    required bool isAdmin,
   }) async {
     emit(CreateLoading());
 
     try {
       final AuthResponse response = await supabase.auth.signUp(
-        data: {"username": userName, "phone": phone},
+        data: {
+          "username": userName,
+          "phone": phone,
+          "is_admin": isAdmin,
+        },
         email: email,
         password: password,
       );
 
       if (response.user != null) {
-    
-
         emit(CreateSuccess());
       } else {
         emit(CreateError(message: "Unknown error occurred during signup"));
@@ -99,8 +103,9 @@ class AuthCubit extends Cubit<AuthState> {
           key: userNameUser, value: response.user?.userMetadata?['username']);
       CacheData.setData(
           key: phoneCahnged, value: response.user?.userMetadata?['phone']);
+      CacheData.setData(
+          key: AppCacheData.isAdmin, value: response.user?.userMetadata?["is_admin"]);
       CacheData.setData(key: emailChanged, value: email);
-
     } on AuthException catch (e) {
       log("login the error is **** ${e.message}");
 

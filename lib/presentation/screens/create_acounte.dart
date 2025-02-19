@@ -26,6 +26,7 @@ class _SignupScreenState extends State<SignupView> {
   TextEditingController? emailController = TextEditingController();
   TextEditingController? passwordController = TextEditingController();
   TextEditingController? verifyPasswordController = TextEditingController();
+  bool isadmin = false;
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +72,6 @@ class _SignupScreenState extends State<SignupView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-
                       const Center(
                         child: Text("Sign Up",
                             style: TextStyle(
@@ -157,13 +157,21 @@ class _SignupScreenState extends State<SignupView> {
                       const SizedBox(
                         height: 40,
                       ),
-                     const  Usertype(),    //toggle button to determine user Type
-                    const  SizedBox(height:20,),
+                      Usertype(
+                        isAdmin: (p0) {
+                          isadmin = p0;
+                          print(isadmin);
+                        },
+                      ), //toggle button to determine user Type
+                      const SizedBox(
+                        height: 20,
+                      ),
                       Custombottom(
                           text: "Create Account",
                           onpressed: () {
                             if (formKey.currentState!.validate()) {
                               context.read<AuthCubit>().createAccount(
+                                  isAdmin: isadmin,
                                   email: emailController!.text,
                                   password: passwordController!.text,
                                   userName: nameController!.text,
