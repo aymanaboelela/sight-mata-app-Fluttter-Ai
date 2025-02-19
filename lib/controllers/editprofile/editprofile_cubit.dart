@@ -22,14 +22,10 @@ class EditprofileCubit extends Cubit<EditprofileState> {
     emit(EditprofileLoading());
 
     try {
-      // التحقق من إدخال كلمة المرور القديمة عند تغيير كلمة المرور
-      if (newPassword != null && newPassword.isNotEmpty) {
-        if (oldPassword == null || oldPassword.isEmpty) {
-          emit(EditprofileError(
-              message: "يجب إدخال كلمة المرور القديمة لتغيير كلمة المرور."));
-          return;
-        }
-      }
+      await supabase.auth.signInWithPassword(
+        email: CacheData.getData(key: emailChanged) ?? '',
+        password: oldPassword!,
+      );
 
       // إنشاء خريطة البيانات التي سيتم تحديثها
       Map<String, dynamic> updatedData = {};
@@ -38,12 +34,6 @@ class EditprofileCubit extends Cubit<EditprofileState> {
       }
       if (newPhone != null && newPhone.isNotEmpty) {
         updatedData["phone"] = newPhone;
-      }
-
-      // التحقق من وجود بيانات لتحديثها
-      if (updatedData.isEmpty && newEmail == null && newPassword == null) {
-        emit(EditprofileError(message: "لم يتم إدخال أي بيانات لتحديثها."));
-        return;
       }
 
       final UserResponse res = await supabase.auth.updateUser(
@@ -75,8 +65,7 @@ class EditprofileCubit extends Cubit<EditprofileState> {
       emit(EditprofileSuccess());
     } catch (e) {
       log("Error updating profile: $e");
-      emit(EditprofileError(
-          message: "حدث خطأ أثناء تحديث البيانات: ${e.toString()}"));
+      emit(EditprofileError(message: "Error updating profile"));
     }
   }
 }

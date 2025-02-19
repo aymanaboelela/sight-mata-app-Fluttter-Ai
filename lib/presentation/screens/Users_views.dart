@@ -66,29 +66,6 @@ class _UsersViewsState extends State<UsersViews> {
                       },
                       child: const Addanotheruser()),
                   const SizedBox(height: 100),
-
-
-
-
-
-
-
-
-
-                  GestureDetector(
-                    onTap: () {
-                      GoRouter.of(context).pushReplacement(AppRouter.KBLindHomeView);
-                    },
-                    child: Container(
-                      color: Colors.red,
-                      width: 200,
-                      height: 50,
-                      alignment: Alignment.center,
-                      child: Text(
-                        "Temporary Button\n    For BLind User",
-                      ),
-                    ),
-                  )
                 ],
               ),
             ),
