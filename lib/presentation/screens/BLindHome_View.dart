@@ -14,7 +14,7 @@ class _HomeScreenState extends State<HomeBlindView> {
 
   // List of screens to switch between
   final List<Widget> _screens = [
-    BLindHome_View(),
+    VoiceAICommunicationPage(),
     BlindlocationView(),
     BlindsettingsView(),
 
