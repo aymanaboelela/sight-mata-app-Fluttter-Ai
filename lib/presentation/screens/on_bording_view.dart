@@ -26,7 +26,6 @@ class _OnBordingViewState extends State<OnBordingView> {
   @override
   void dispose() {
     _pageController1.dispose();
-
     super.dispose();
   }
 
@@ -48,20 +47,17 @@ class _OnBordingViewState extends State<OnBordingView> {
                     CacheData.setData(
                         key: AppCacheData.isOnBordingFinshed, value: true);
                     GoRouter.of(context).pushReplacement(AppRouter.kLoginView);
-                    // _pageController1.jumpToPage(2);
-                    // _pageController2.jumpToPage(2);
-                    // _pageController3.jumpToPage(2);
                   },
                   child: const Text(
                     "Skip",
                     style: TextStyle(color: AppColors.white),
                   ),
                 ),
-                SizedBox(
-                  height: 10.h,
-                ),
-                Expanded(
+                SizedBox(height: 10.h),
+                Flexible(
                   child: PageView(
+                    scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(),
                     controller: _pageController1,
                     onPageChanged: (index) {
                       setState(() {
@@ -85,20 +81,18 @@ class _OnBordingViewState extends State<OnBordingView> {
                         heading: "Immediate Alerts When It Matters Most",
                         image: AppAssets.onbording3,
                         subHeading:
-                            "If your loved one is in danger,\n they can send an emergency alert with their location\n and a pre-set message directly to you.",
+                            "If your loved one is in danger,\n they can send an emergency alert with their location and a pre-set message directly to you.",
                       ),
                       CustomOnpordingPageView(
                         heading: "Welcome to Sight Mate!",
                         image: AppAssets.onbording4,
                         subHeading:
-                            "take care of your loved ones and\n get some peace of mind",
+                            "Take care of your loved ones and\n get some peace of mind.",
                       ),
-
-                      //
                       CustomOnpordingPageView(
                         heading: "Identify Your Surroundings",
                         subHeading:
-                            "Point your phone at objects,\n and Sight Mate will describe them to you.\n This helps you know what’s around you",
+                            "\n\nPoint your phone at objects,\n and Sight Mate will describe them to you.\n This helps you know what’s around you.",
                       ),
                       CustomOnpordingPageView(
                         heading: "Safety First",
@@ -108,12 +102,12 @@ class _OnBordingViewState extends State<OnBordingView> {
                       CustomOnpordingPageView(
                         heading: "Your Privacy is Our Priority",
                         subHeading:
-                            "At Sight Mate, we are committed to protecting\nyour privacy.Your location will only be shared with trusted contacts and only with \nyour permission.",
+                            "At Sight Mate, we are committed to protecting\nyour privacy. Your location will only be shared with trusted contacts and only with \nyour permission.",
                       ),
                       CustomOnpordingPageView(
                         heading: "Your Guide Starts Here",
                         subHeading:
-                            "\ntake care of your loved ones and\n get some peace of mind",
+                            "Take care of your loved ones and\n get some peace of mind.  ",
                       ),
                     ],
                   ),
@@ -139,9 +133,7 @@ class _OnBordingViewState extends State<OnBordingView> {
                     },
                   ),
                 ),
-                SizedBox(
-                  height: 22.h,
-                ),
+                SizedBox(height: 22.h),
                 if (_currentPage < 3)
                   Center(child: OnBordingDots(index: _currentPage.clamp(0, 2))),
                 if (_currentPage > 3 && _currentPage < 6)
@@ -173,51 +165,56 @@ class _OnBordingViewState extends State<OnBordingView> {
 }
 
 class CustomOnpordingPageView extends StatelessWidget {
-  const CustomOnpordingPageView(
-      {super.key, this.heading, this.subHeading, this.image});
+  const CustomOnpordingPageView({
+    super.key,
+    this.heading,
+    this.subHeading,
+    this.image,
+  });
+
   final String? heading, subHeading, image;
 
   @override
   Widget build(BuildContext context) {
-    return image != null
-        ? Column(
-            children: [
-              Text(
-                heading!,
-                style: const TextStyle(
-                    color: AppColors.white, fontWeight: FontWeight.w600),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 20.h),
-              SizedBox(height: 200.h, child: LottieBuilder.asset(image!)),
-              SizedBox(height: 270.h),
-              Text(subHeading!,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                      color: AppColors.primaryBlueColor,
-                      fontWeight: FontWeight.w500)),
-            ],
-          )
-        : Column(
-            children: [
-              SizedBox(height: 120.h),
-              Text(
-                heading!,
-                style: const TextStyle(
-                    color: AppColors.white,
-                    fontWeight: FontWeight.w900,
-                    fontSize: 20),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 362.h),
-              Text(
-                subHeading!,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                    color: AppColors.primaryBlueColor,
-                    fontWeight: FontWeight.w500),
-              ),
-            ],
-          );
+    return Container(
+      // استخدام Container لمنع مشاكل ParentDataWidget
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          image == null ? Spacer() : SizedBox(),
+
+          Text(
+            heading!,
+            style: const TextStyle(
+                color: AppColors.white, fontWeight: FontWeight.w600),
+            textAlign: TextAlign.center,
+          ),
+          const Spacer(
+            flex: 1,
+          ),
+          if (image != null)
+            Container(
+              height: 200.h,
+              child: Lottie.asset(image!),
+            ),
+          const Spacer(
+            flex: 3,
+          ),
+          if (subHeading != null)
+            Text(
+              subHeading!,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                  color: AppColors.primaryBlueColor,
+                  fontWeight: FontWeight.w500),
+            ),
+          SizedBox(height: 20.h),
+          // const Spacer(
+          //   flex: 1,
+          // ),
+        ],
+      ),
+    );
   }
 }

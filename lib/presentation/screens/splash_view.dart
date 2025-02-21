@@ -79,6 +79,7 @@ class _SplashViewbodyState extends State<SplashViewbody>
   /// Navigates to the correct screen after 3 seconds
   void _goToNewScreen() {
     Future.delayed(const Duration(seconds: 3), () {
+      // CacheData.clearData(clearData: true);
       final session = Supabase.instance.client.auth.currentSession;
       if (_hasSeenOnboarding == false) {
         GoRouter.of(context).pushReplacement(AppRouter.kOnBoardingView);
