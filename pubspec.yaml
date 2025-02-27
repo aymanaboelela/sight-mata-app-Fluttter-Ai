@@ -47,6 +47,8 @@ dependencies:
   google_fonts: ^6.2.1
   lottie: ^3.3.1
   modal_progress_hud_nsn: ^0.5.1
+  onnxruntime: ^1.4.1
+  opencv_dart: ^1.4.1
   shared_preferences: ^2.5.1
   speech_to_text: ^7.0.0
   supabase_flutter: ^2.8.3
@@ -70,6 +72,7 @@ flutter:
   assets:
     - assets/images/
     - assets/josn/
+    - assets/model/modle.onnx
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

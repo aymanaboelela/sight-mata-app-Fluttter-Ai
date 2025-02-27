@@ -1,11 +1,13 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sight_mate_app/core/constants/app_assets.dart';
-import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:camera/camera.dart';
-import 'package:speech_to_text/speech_to_text.dart';
+import 'package:onnxruntime/onnxruntime.dart';
+import 'package:path_provider/path_provider.dart';
 
 class VoiceAICommunicationPage extends StatefulWidget {
   @override
@@ -14,17 +16,15 @@ class VoiceAICommunicationPage extends StatefulWidget {
 }
 
 class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
-  late SpeechToText _speech;
-  bool _isListening = false;
-  String _text = "";
   late FlutterTts _flutterTts;
   late CameraController _cameraController;
   late Future<void> _initializeCameraFuture;
+  OrtSession? _session;
+  bool _isProcessingFrame = false;
 
   @override
   void initState() {
     super.initState();
-    _speech = stt.SpeechToText();
     _flutterTts = FlutterTts();
 
     // قفل الاتجاه إلى الوضع العمودي فقط
@@ -33,12 +33,30 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
       DeviceOrientation.portraitDown,
     ]);
 
-    // تعيين اللغة العربية لتحويل النص إلى كلام
-    _flutterTts.setLanguage("ar-SA");
-    _flutterTts.setSpeechRate(0.5);
+    // تهيئة بيئة OnnxRuntime
+    OrtEnv.instance.init();
+
+    // تحميل نموذج ONNX
+    _loadModel();
 
     // تهيئة الكاميرا
     _initializeCameraFuture = _initializeCamera();
+  }
+
+  Future<void> _loadModel() async {
+    try {
+      final modelPath = "assets/model/model.onnx";
+      final modelData = await rootBundle.load(modelPath);
+      final directory = await getTemporaryDirectory();
+      final tempFile = File("${directory.path}/model.onnx");
+      await tempFile.writeAsBytes(modelData.buffer.asUint8List());
+
+      final sessionOptions = OrtSessionOptions();
+      _session = OrtSession.fromBuffer(modelData.buffer.asUint8List(), sessionOptions);
+      print("Model loaded successfully.");
+    } catch (e) {
+      print("Error loading ONNX model: $e");
+    }
   }
 
   Future<void> _initializeCamera() async {
@@ -55,42 +73,52 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
     if (mounted) {
       setState(() {});
     }
-  }
 
-  void _startListening() async {
-    bool available = await _speech.initialize();
-    if (available) {
-      setState(() {
-        _isListening = true;
-      });
-      _speech.listen(onResult: (result) {
-        setState(() {
-          _text = result.recognizedWords;
+    // بدء بث الفيديو ومعالجة كل Frame
+    _cameraController.startImageStream((CameraImage image) {
+       imageFormatGroup: ImageFormatGroup.jpeg;
+      if (!_isProcessingFrame && _session != null) {
+        _isProcessingFrame = true;
+        _processCameraFrame(image).then((_) {
+          _isProcessingFrame = false;
         });
-        _processUserInput(_text);
-      });
-    } else {
-      print("Speech recognition is not available.");
-    }
-  }
-
-  void _stopListening() {
-    _speech.stop();
-    setState(() {
-      _isListening = false;
+      }
     });
   }
 
-  void _processUserInput(String userInput) async {
-    String aiResponse =
-        "This is a response from AI based on your input: $userInput";
+  Future<void> _processCameraFrame(CameraImage image) async {
+    try {
+      if (_session == null) {
+        print("ONNX model session is not initialized yet.");
+        return;
+      }
+      List<int> inputData = image.planes[0].bytes;
+      final shape = [1, inputData.length];
+      final inputOrt = OrtValueTensor.createTensorWithDataList(inputData, shape);
+      final inputs = {'input': inputOrt};
+      final runOptions = OrtRunOptions();
+      final outputs = await _session!.runAsync(runOptions, inputs);
 
-    await _flutterTts.speak(aiResponse);
+      inputOrt.release();
+      runOptions.release();
+      outputs?.forEach((element) {
+        element?.release();
+      });
+
+      if (outputs != null && outputs.isNotEmpty) {
+        String result = outputs.first.toString();
+        print("Model Output: $result");
+        await _flutterTts.speak("I detected: $result");
+      }
+    } catch (e) {
+      print("Error processing frame: $e");
+    }
   }
 
   @override
   void dispose() {
     _cameraController.dispose();
+    OrtEnv.instance.release();
     super.dispose();
   }
 
@@ -109,7 +137,9 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
                       quarterTurns: 1,
                       child: AspectRatio(
                         aspectRatio: _cameraController.value.aspectRatio,
-                        child: CameraPreview(_cameraController),
+                        child: CameraPreview(
+                          
+                          _cameraController),
                       ),
                     ),
                   );
@@ -117,29 +147,6 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
                   return Center(child: Lottie.asset(AppAssets.loding));
                 }
               },
-            ),
-            Positioned(
-              bottom: 10,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: Column(
-                  children: [
-                    Text(_isListening
-                        ? "Listening..."
-                        : "Tap to Start Listening"),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed:
-                          _isListening ? _stopListening : _startListening,
-                      child: Text(
-                          _isListening ? "Stop Listening" : "Start Listening"),
-                    ),
-                    const SizedBox(height: 20),
-                    Text("You said: $_text"),
-                  ],
-                ),
-              ),
             ),
           ],
         ),

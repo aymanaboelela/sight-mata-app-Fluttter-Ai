@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:onnxruntime/onnxruntime.dart';
 import 'package:sight_mate_app/controllers/add_data_cubit/data_cubit.dart';
 import 'package:sight_mate_app/controllers/auth/auth_cubit.dart';
 import 'package:sight_mate_app/controllers/editprofile/editprofile_cubit.dart';
@@ -19,7 +20,7 @@ void main() async {
     url: supabaseUrl,
     anonKey: apiKey,
   );
-
+OrtEnv.instance.init();
   // bloc observer
   Bloc.observer = SimpleBlocObserver();
   // Ensure screen size is initialized for ScreenUtil

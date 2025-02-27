@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "D:/progect in flutter/sight_mate_app/linux"
+    "cmake.sourceDirectory": "D:/progect in flutter/sight_mate_app/linux",
+    "java.configuration.updateBuildConfiguration": "interactive"
 }
