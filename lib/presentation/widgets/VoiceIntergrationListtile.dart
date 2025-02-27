@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sight_mate_app/core/constants/cach_data_const.dart';
 import 'package:sight_mate_app/core/constants/colors.dart';
+import 'package:sight_mate_app/core/helper/cach_data.dart';
 
 class VoiceIntergrationListtile extends StatefulWidget {
   const VoiceIntergrationListtile({super.key});
@@ -11,7 +13,14 @@ class VoiceIntergrationListtile extends StatefulWidget {
 
 class _VoiceIntergrationListtileState extends State<VoiceIntergrationListtile> {
   bool isSwitched = false;
-  String selectedSound = 'mail';
+  String selectedSound = 'Female';
+  @override
+  void initState() {
+    isSwitched = CacheData.getData(key: AppCacheData.voiceIntergration) ?? true;
+    selectedSound =
+        CacheData.getData(key: AppCacheData.selectedSound) ?? "Female";
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +52,8 @@ class _VoiceIntergrationListtileState extends State<VoiceIntergrationListtile> {
             onTap: () {
               setState(() {
                 isSwitched = !isSwitched;
+                CacheData.setData(
+                    key: AppCacheData.voiceIntergration, value: isSwitched);
               });
             },
             child: Container(
@@ -118,6 +129,9 @@ class _VoiceIntergrationListtileState extends State<VoiceIntergrationListtile> {
                   onChanged: (value) {
                     setState(() {
                       selectedSound = value.toString();
+                      CacheData.setData(
+                          key: AppCacheData.selectedSound,
+                          value: selectedSound);
                     });
                   },
                 ),
@@ -133,6 +147,9 @@ class _VoiceIntergrationListtileState extends State<VoiceIntergrationListtile> {
                   onChanged: (value) {
                     setState(() {
                       selectedSound = value.toString();
+                      CacheData.setData(
+                          key: AppCacheData.selectedSound,
+                          value: selectedSound);
                     });
                   },
                 ),

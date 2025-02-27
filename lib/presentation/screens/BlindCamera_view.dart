@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:lottie/lottie.dart';
+import 'package:sight_mate_app/core/constants/app_assets.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:camera/camera.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 
 class VoiceAICommunicationPage extends StatefulWidget {
   @override
@@ -10,7 +14,7 @@ class VoiceAICommunicationPage extends StatefulWidget {
 }
 
 class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
-  late stt.SpeechToText _speech;
+  late SpeechToText _speech;
   bool _isListening = false;
   String _text = "";
   late FlutterTts _flutterTts;
@@ -23,7 +27,17 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
     _speech = stt.SpeechToText();
     _flutterTts = FlutterTts();
 
-    // Initialize the camera controller
+    // قفل الاتجاه إلى الوضع العمودي فقط
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
+    // تعيين اللغة العربية لتحويل النص إلى كلام
+    _flutterTts.setLanguage("ar-SA");
+    _flutterTts.setSpeechRate(0.5);
+
+    // تهيئة الكاميرا
     _initializeCameraFuture = _initializeCamera();
   }
 
@@ -34,13 +48,15 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
     _cameraController = CameraController(
       firstCamera,
       ResolutionPreset.high,
+      enableAudio: false,
     );
 
     await _cameraController.initialize();
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
-  // Start listening to user's voice
   void _startListening() async {
     bool available = await _speech.initialize();
     if (available) {
@@ -58,7 +74,6 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
     }
   }
 
-  // Stop listening
   void _stopListening() {
     _speech.stop();
     setState(() {
@@ -66,13 +81,10 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
     });
   }
 
-  // Process the input from the user (send it to AI and get a response)
   void _processUserInput(String userInput) async {
-    // هنا يمكنك إرسال النص إلى الـ AI
     String aiResponse =
         "This is a response from AI based on your input: $userInput";
 
-    // بعدها قم بتحويل الرد إلى صوت
     await _flutterTts.speak(aiResponse);
   }
 
@@ -86,49 +98,50 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Center(
-          child: Stack(
-            children: [
-              FutureBuilder<void>(
-                future: _initializeCameraFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      child: CameraPreview(_cameraController),
-                    );
-                  } else {
-                    return CircularProgressIndicator();
-                  }
-                },
-              ),
-              Positioned(
-                bottom: 10,
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: Column(
-                    children: [
-                      Text(_isListening
-                          ? "Listening..."
-                          : "Tap to Start Listening"),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed:
-                            _isListening ? _stopListening : _startListening,
-                        child: Text(_isListening
-                            ? "Stop Listening"
-                            : "Start Listening"),
+        child: Stack(
+          children: [
+            FutureBuilder<void>(
+              future: _initializeCameraFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return Center(
+                    child: RotatedBox(
+                      quarterTurns: 1,
+                      child: AspectRatio(
+                        aspectRatio: _cameraController.value.aspectRatio,
+                        child: CameraPreview(_cameraController),
                       ),
-                      const SizedBox(height: 20),
-                      Text("You said: $_text"),
-                    ],
-                  ),
+                    ),
+                  );
+                } else {
+                  return Center(child: Lottie.asset(AppAssets.loding));
+                }
+              },
+            ),
+            Positioned(
+              bottom: 10,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Column(
+                  children: [
+                    Text(_isListening
+                        ? "Listening..."
+                        : "Tap to Start Listening"),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed:
+                          _isListening ? _stopListening : _startListening,
+                      child: Text(
+                          _isListening ? "Stop Listening" : "Start Listening"),
+                    ),
+                    const SizedBox(height: 20),
+                    Text("You said: $_text"),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
