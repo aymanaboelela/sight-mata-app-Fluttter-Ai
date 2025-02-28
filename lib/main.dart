@@ -20,7 +20,7 @@ void main() async {
     url: supabaseUrl,
     anonKey: apiKey,
   );
-OrtEnv.instance.init();
+
   // bloc observer
   Bloc.observer = SimpleBlocObserver();
   // Ensure screen size is initialized for ScreenUtil

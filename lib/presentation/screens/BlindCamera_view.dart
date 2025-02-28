@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,8 +7,10 @@ import 'package:lottie/lottie.dart';
 import 'package:sight_mate_app/core/constants/app_assets.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:camera/camera.dart';
-import 'package:onnxruntime/onnxruntime.dart';
+import 'package:tflite_flutter/tflite_flutter.dart'; // استيراد مكتبة TFLite
 import 'package:path_provider/path_provider.dart';
+import 'package:image/image.dart' as img; // مكتبة لتحويل الصور
+import 'dart:core'; // لاستخدام Stopwatch
 
 class VoiceAICommunicationPage extends StatefulWidget {
   @override
@@ -19,8 +22,11 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
   late FlutterTts _flutterTts;
   late CameraController _cameraController;
   late Future<void> _initializeCameraFuture;
-  OrtSession? _session;
+  Interpreter? _interpreter; // الجلسة الخاصة بـ TFLite
   bool _isProcessingFrame = false;
+  String _processingTime =
+      "Processing Time: 0.0 ms"; // لتخزين وعرض وقت المعالجة
+  String _outputText = "Waiting for output..."; // لعرض النص الناتج من النموذج
 
   @override
   void initState() {
@@ -28,37 +34,28 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
     _flutterTts = FlutterTts();
 
     // قفل الاتجاه إلى الوضع العمودي فقط
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
-    // تهيئة بيئة OnnxRuntime
-    OrtEnv.instance.init();
-
-    // تحميل نموذج ONNX
+    // تحميل نموذج TFLite
     _loadModel();
 
     // تهيئة الكاميرا
     _initializeCameraFuture = _initializeCamera();
   }
 
+  // تحميل نموذج TFLite
   Future<void> _loadModel() async {
     try {
-      final modelPath = "assets/model/model.onnx";
-      final modelData = await rootBundle.load(modelPath);
-      final directory = await getTemporaryDirectory();
-      final tempFile = File("${directory.path}/model.onnx");
-      await tempFile.writeAsBytes(modelData.buffer.asUint8List());
-
-      final sessionOptions = OrtSessionOptions();
-      _session = OrtSession.fromBuffer(modelData.buffer.asUint8List(), sessionOptions);
-      print("Model loaded successfully.");
+      _interpreter = await Interpreter.fromAsset(
+          'assets/model/model_- 21 february 2025 15_42.tflite'); // تحديد المسار للنموذج
+      log("Model loaded successfully.");
     } catch (e) {
-      print("Error loading ONNX model: $e");
+      log("Error loading TFLite model: $e");
     }
   }
 
+  // تهيئة الكاميرا
   Future<void> _initializeCamera() async {
     final cameras = await availableCameras();
     final firstCamera = cameras.first;
@@ -73,80 +70,128 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
     if (mounted) {
       setState(() {});
     }
-
-    // بدء بث الفيديو ومعالجة كل Frame
-    _cameraController.startImageStream((CameraImage image) {
-       imageFormatGroup: ImageFormatGroup.jpeg;
-      if (!_isProcessingFrame && _session != null) {
-        _isProcessingFrame = true;
-        _processCameraFrame(image).then((_) {
-          _isProcessingFrame = false;
-        });
-      }
-    });
   }
 
-  Future<void> _processCameraFrame(CameraImage image) async {
+  // التقاط صورة ثابتة وإرسالها إلى النموذج
+  Future<void> _takePictureAndSendToModel() async {
     try {
-      if (_session == null) {
-        print("ONNX model session is not initialized yet.");
+      // التقاط صورة ثابتة
+      XFile imageFile = await _cameraController.takePicture();
+
+      debugPrint("Image captured: ${imageFile.path}");
+
+      // تحميل الصورة وتحويلها إلى بيانات بايت
+      File image = File(imageFile.path);
+      List<int> imageBytes = await image.readAsBytes();
+
+      debugPrint("Image size: ${imageBytes.length} bytes");
+
+      // إرسال الصورة للنموذج
+      await _sendToModel(imageBytes);
+    } catch (e) {
+      debugPrint("Error capturing image: $e");
+    }
+  }
+
+  // إرسال الصورة إلى نموذج TFLite
+  Future<void> _sendToModel(List<int> imageBytes) async {
+    try {
+      // بدء قياس وقت المعالجة
+      final stopwatch = Stopwatch()..start();
+
+      debugPrint(
+          "Input Data (first 100 bytes): ${imageBytes.sublist(0, 100)}...");
+      debugPrint("Input data length: ${imageBytes.length} bytes");
+
+      // التأكد من أن البيانات ليست فارغة
+      if (imageBytes.isEmpty) {
+        debugPrint("Input data is empty!");
         return;
       }
-      List<int> inputData = image.planes[0].bytes;
-      final shape = [1, inputData.length];
-      final inputOrt = OrtValueTensor.createTensorWithDataList(inputData, shape);
-      final inputs = {'input': inputOrt};
-      final runOptions = OrtRunOptions();
-      final outputs = await _session!.runAsync(runOptions, inputs);
 
-      inputOrt.release();
-      runOptions.release();
-      outputs?.forEach((element) {
-        element?.release();
+      // تحويل الصورة من YUV إلى RGB باستخدام المكتبة
+      final img.Image? convertedImage = img.decodeImage(Uint8List.fromList(imageBytes)); // تحويل الصورة من YUV إلى RGB
+
+      if (convertedImage == null) {
+        debugPrint("Error: Failed to decode image.");
+        return;
+      }
+
+      // تغيير حجم الصورة إلى الحجم المتوقع للنموذج (مثل 224x224)
+      final resizedImage = img.copyResize(convertedImage, width: 224, height: 224); // تعديل الحجم
+
+      debugPrint("Converted and resized image: ${resizedImage.width}x${resizedImage.height}");
+
+      // تخصيص المخرجات
+      var output = List.filled(1, List.filled(10, 0)); // تخصيص حجم المخرجات بناءً على احتياجات النموذج
+
+      // إرسال البيانات إلى النموذج
+      _interpreter?.run(resizedImage.getBytes(), output);
+
+      // التحقق من النتيجة
+      String result = output.toString();
+      debugPrint("Model Output: $result");
+
+      setState(() {
+        _outputText = result; // تخزين النص الناتج من النموذج
       });
 
-      if (outputs != null && outputs.isNotEmpty) {
-        String result = outputs.first.toString();
-        print("Model Output: $result");
-        await _flutterTts.speak("I detected: $result");
-      }
+      // التحدث بالنتيجة
+      await _flutterTts.speak("I detected: $result");
+
+      stopwatch.stop();
+      setState(() {
+        _processingTime =
+            "Processing Time: ${stopwatch.elapsedMilliseconds} ms"; // تحديث وقت المعالجة
+      });
     } catch (e) {
-      print("Error processing frame: $e");
+      debugPrint("Error processing image: $e");
     }
   }
 
   @override
   void dispose() {
     _cameraController.dispose();
-    OrtEnv.instance.release();
+    _interpreter?.close(); // إغلاق الجلسة بعد الانتهاء
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text("AI Image Detection")),
       body: SafeArea(
-        child: Stack(
+        child: Column(
           children: [
             FutureBuilder<void>(
               future: _initializeCameraFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   return Center(
-                    child: RotatedBox(
-                      quarterTurns: 1,
-                      child: AspectRatio(
-                        aspectRatio: _cameraController.value.aspectRatio,
-                        child: CameraPreview(
-                          
-                          _cameraController),
-                      ),
+                    child: AspectRatio(
+                      aspectRatio: _cameraController.value.aspectRatio,
+                      child: CameraPreview(_cameraController),
                     ),
                   );
                 } else {
                   return Center(child: Lottie.asset(AppAssets.loding));
                 }
               },
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _takePictureAndSendToModel,
+              child: Text('Capture Image and Send to Model'),
+            ),
+            SizedBox(height: 20),
+            Text(
+              _processingTime, // عرض وقت المعالجة
+              style: TextStyle(fontSize: 16, color: Colors.black),
+            ),
+            SizedBox(height: 10),
+            Text(
+              "Output: $_outputText", // عرض النص الناتج
+              style: TextStyle(fontSize: 16, color: Colors.black),
             ),
           ],
         ),
