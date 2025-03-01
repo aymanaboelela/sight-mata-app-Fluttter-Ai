@@ -10,7 +10,6 @@ list(APPEND FLUTTER_PLUGIN_LIST
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
   onnxruntime
-  opencv_dart
   tflite_flutter
 )
 

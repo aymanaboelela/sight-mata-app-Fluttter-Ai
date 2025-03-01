@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:lottie/lottie.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:sight_mate_app/controllers/add_data_cubit/data_cubit.dart';
@@ -8,6 +12,7 @@ import 'package:sight_mate_app/core/constants/app_assets.dart';
 import 'package:sight_mate_app/core/constants/colors.dart';
 import 'package:sight_mate_app/core/constants/constans.dart';
 import 'package:sight_mate_app/core/helper/cach_data.dart';
+import 'package:sight_mate_app/presentation/screens/map.dart';
 import 'package:sight_mate_app/presentation/widgets/DIstanceAlert.dart';
 import 'package:sight_mate_app/presentation/widgets/Switched_ON.dart';
 import 'package:sight_mate_app/presentation/widgets/saveButton.dart';
@@ -112,35 +117,55 @@ class _UserlocationnowViewState extends State<UserlocationnowView> {
                       const SizedBox(
                         height: 20,
                       ),
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.location_on,
-                            size: 40,
-                            color: Colors.black,
-                          ),
-                          const Text(
-                            "Show ",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            widget.data.username,
-                            style: const TextStyle(
-                                color: AppColors.primaryBlueColor,
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          const Text(
-                            " Location Now",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
+                      GestureDetector(
+                        onTap: () {
+                          LatLng? latLng = LatLng(
+                              widget.data.lat ?? 0.0, widget.data.lon ?? 0.0);
+                          log('''
+lat ${latLng.latitude}
+lng ${latLng.latitude}
+ 
+ //\\//\\
+${widget.data.lat}
+${widget.data.lon}
+''');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MapScreen(latlng: latLng),
+                            ),
+                          );
+                        },
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.location_on,
+                              size: 40,
+                              color: Colors.black,
+                            ),
+                            const Text(
+                              "Show ",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              widget.data.username,
+                              style: const TextStyle(
+                                  color: AppColors.primaryBlueColor,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            const Text(
+                              " Location Now",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
                       ),
                       const SizedBox(
                         height: 40,
@@ -251,19 +276,20 @@ class _UserlocationnowViewState extends State<UserlocationnowView> {
                         height: 90,
                       ),
                       Center(
-                        child: newDistance != null
+                        child: newDistance != null || selectedLocation != null
                             ? Savebutton(
                                 onPressed: () {
                                   context.read<DataCubit>().updateData(
                                         email: widget.data.email,
                                         name: widget.data.username,
                                         distance: newDistance,
-                                        lat: 30.0,
-                                        lon: 40.0,
+                                        lat: selectedLocation?.latitude,
+                                        lon: selectedLocation?.longitude,
                                       );
+                                  selectedLocation = null;
                                 },
                               )
-                            : SavebuttonOf(),
+                            : const SavebuttonOf(),
                       )
                     ],
                   ),

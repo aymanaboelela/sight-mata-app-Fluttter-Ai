@@ -1,9 +1,10 @@
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:onnxruntime/onnxruntime.dart';
 import 'package:sight_mate_app/controllers/add_data_cubit/data_cubit.dart';
 import 'package:sight_mate_app/controllers/auth/auth_cubit.dart';
 import 'package:sight_mate_app/controllers/editprofile/editprofile_cubit.dart';
@@ -12,6 +13,12 @@ import 'package:sight_mate_app/core/helper/cach_data.dart';
 import 'package:sight_mate_app/core/helper/simple_bloc_observer.dart';
 import 'package:sight_mate_app/core/utils/router/app_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'controllers/cubit/map_cubit.dart';
+import 'core/helper/location/location_permission.dart';
+import 'data/repository/map_repository.dart';
+import 'data/source/apis/maps_api.dart';
+import 'presentation/screens/map.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,6 +47,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider(
+          create: (_) => MapCubit(
+              MapsRepository(MapsWebService(Dio())), LocationService()),
+          child: MapScreen(
+          ),
+        ),
         BlocProvider<AuthCubit>(
           create: (context) => AuthCubit(),
         ),

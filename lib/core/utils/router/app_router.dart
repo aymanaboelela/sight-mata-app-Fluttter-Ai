@@ -1,8 +1,8 @@
 // import 'package:akodo_api/features/addHouse/presentation/controller/addhouse/add_house_stite.dart';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sight_mate_app/controllers/editprofile/editprofile_cubit.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:sight_mate_app/core/utils/router/page_transition.dart';
 import 'package:sight_mate_app/models/data_mode.dart';
 import 'package:sight_mate_app/presentation/screens/About_view.dart';
@@ -18,6 +18,8 @@ import 'package:sight_mate_app/presentation/screens/login_view.dart';
 import 'package:sight_mate_app/presentation/screens/on_bording_view.dart';
 import 'package:sight_mate_app/presentation/screens/splash_view.dart';
 
+import '../../../presentation/screens/map.dart';
+
 abstract class AppRouter {
   static const kOnBoardingView = '/onboardingView';
   static const kLoginView = '/login';
@@ -29,9 +31,9 @@ abstract class AppRouter {
   static const kAboutView = '/AboutView';
   static const khelpView = '/khelpView';
   static const kUserLocationNow = '/kUserLocationNow';
-    static const KBLindHomeView = '/BLindHomeView';
-    static const KGeneralSettings = '/GeneralSettings';
-
+  static const KBLindHomeView = '/BLindHomeView';
+  static const KGeneralSettings = '/GeneralSettings';
+  static const distanceSelectScreen = '/distanceSelectScreen';
 
   // edit house
 
@@ -84,12 +86,12 @@ abstract class AppRouter {
         pageBuilder: (context, state) =>
             PageTransitionManager.fadeTransition(HelpView()),
       ),
-       GoRoute(
+      GoRoute(
         path: KBLindHomeView,
         pageBuilder: (context, state) =>
             PageTransitionManager.fadeTransition(HomeBlindView()),
       ),
-        GoRoute(
+      GoRoute(
         path: KGeneralSettings,
         pageBuilder: (context, state) =>
             PageTransitionManager.fadeTransition(Generalsettings()),

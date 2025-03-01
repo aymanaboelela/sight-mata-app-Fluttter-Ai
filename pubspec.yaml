@@ -33,12 +33,14 @@ dependencies:
   camera: ^0.11.1
   cupertino_icons: ^1.0.8
   curved_navigation_bar: ^1.0.6
+  dio: ^5.8.0+1
   dots_indicator: ^3.0.0
   flutter:
     sdk: flutter
   flutter_bloc: ^9.0.0
   flutter_langdetect: ^0.0.2
   flutter_launcher_icons: ^0.14.3
+  flutter_map: ^5.0.0
   flutter_screenutil: ^5.9.3
   flutter_svg: ^2.0.17
   flutter_tts: ^4.2.2
@@ -46,10 +48,12 @@ dependencies:
   go_router: ^14.7.2
   google_fonts: ^6.2.1
   image: ^4.5.3
+  latlong2: ^0.9.1
+  location: ^8.0.0
   lottie: ^3.3.1
+  material_floating_search_bar_2: ^0.5.0
   modal_progress_hud_nsn: ^0.5.1
   onnxruntime: ^1.4.1
-  opencv_dart: ^1.4.1
   shared_preferences: ^2.5.1
   speech_to_text: ^7.0.0
   supabase_flutter: ^2.8.3

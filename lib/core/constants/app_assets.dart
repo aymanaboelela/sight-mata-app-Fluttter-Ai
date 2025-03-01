@@ -12,4 +12,9 @@ abstract class AppAssets {
   static const onbording3 = 'assets/josn/onbording3.json';
   static const onbording4 = 'assets/josn/onbording4.json';
   static const loding = 'assets/josn/loding.json';
+
+  static const searchedLocation = 'assets/images/location.png';
+  static const splashMapLogo = 'assets/images/map1.png';
+  static const currentLocation = 'assets/images/pin1.png';
+  static const car = 'assets/images/car.png';
 }

@@ -5,6 +5,7 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:sight_mate_app/controllers/add_data_cubit/data_cubit.dart';
 import 'package:sight_mate_app/core/constants/app_assets.dart';
 import 'package:sight_mate_app/core/constants/colors.dart';
+import 'package:sight_mate_app/presentation/screens/map.dart';
 import 'package:sight_mate_app/presentation/widgets/CustomTextFormField.dart';
 import 'package:sight_mate_app/presentation/widgets/Switched_ON.dart';
 import 'package:sight_mate_app/presentation/widgets/saveButton.dart';
@@ -165,8 +166,8 @@ class _DistanceOffViewState extends State<DistanceOffView> {
                                 name: nameController!.text,
                                 email: emailController!.text,
                                 distance: distance,
-                                lat: 10,
-                                lon: 10);
+                                lat: selectedLocation?.latitude,
+                                lon: selectedLocation?.longitude);
                           }
                         },
                       )
