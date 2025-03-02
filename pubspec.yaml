@@ -79,7 +79,8 @@ flutter:
   assets:
     - assets/images/
     - assets/josn/
-    - assets/model/model_- 21 february 2025 15_42.tflite
+    - assets/model/model.tflite
+    - assets/model/label.txt
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

@@ -1,16 +1,15 @@
-import 'dart:convert';
+import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sight_mate_app/core/constants/app_assets.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:camera/camera.dart';
-import 'package:tflite_flutter/tflite_flutter.dart'; // استيراد مكتبة TFLite
-import 'package:path_provider/path_provider.dart';
-import 'package:image/image.dart' as img; // مكتبة لتحويل الصور
-import 'dart:core'; // لاستخدام Stopwatch
+import 'package:tflite_flutter/tflite_flutter.dart';
+import 'package:image/image.dart' as img;
 
 class VoiceAICommunicationPage extends StatefulWidget {
   @override
@@ -22,141 +21,240 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
   late FlutterTts _flutterTts;
   late CameraController _cameraController;
   late Future<void> _initializeCameraFuture;
-  Interpreter? _interpreter; // الجلسة الخاصة بـ TFLite
-  bool _isProcessingFrame = false;
-  String _processingTime =
-      "Processing Time: 0.0 ms"; // لتخزين وعرض وقت المعالجة
-  String _outputText = "Waiting for output..."; // لعرض النص الناتج من النموذج
+  Interpreter? _interpreter;
+  bool _isProcessing = false;
+  String _processingTime = "Processing Time: 0.0 ms";
+  String _outputText = "Waiting for output...";
+  List<String> _labels = []; // List to store class labels
 
   @override
   void initState() {
     super.initState();
-    _flutterTts = FlutterTts();
-
-    // قفل الاتجاه إلى الوضع العمودي فقط (بورتريت)
-    SystemChrome.setPreferredOrientations(
-        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-
-    // تحميل نموذج TFLite
-    _loadModel();
-
-    // تهيئة الكاميرا
+    _initializeSystem();
     _initializeCameraFuture = _initializeCamera();
   }
 
-  // تحميل نموذج TFLite
+  void _initializeSystem() async {
+    _flutterTts = FlutterTts();
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+
+    await _loadModel();
+    await _loadLabels(); // Load class labels
+  }
+
+  Future<void> _loadLabels() async {
+    try {
+      final labelData = await rootBundle
+          .loadString('assets/model/label.txt'); // Ensure the file name matches
+      _labels = labelData.split('\n');
+      log("Labels loaded: $_labels");
+    } catch (e) {
+      log("Error loading labels: $e");
+      setState(() {
+        _outputText = "Error loading labels: $e";
+      });
+    }
+  }
+
   Future<void> _loadModel() async {
     try {
+      log("Loading model from assets...");
       _interpreter = await Interpreter.fromAsset(
-          'assets/model/model_- 21 february 2025 15_42.tflite'); // تحديد المسار للنموذج
-      log("Model loaded successfully.");
+        'assets/model/model.tflite',
+        options: InterpreterOptions()..threads = 4,
+      );
+      log("Model loaded successfully");
+
+      // Log input and output tensor shapes
+      final inputTensor = _interpreter!.getInputTensor(0);
+      final outputTensor = _interpreter!.getOutputTensor(0);
+      log("Input Tensor Shape: ${inputTensor.shape}");
+      log("Output Tensor Shape: ${outputTensor.shape}");
     } catch (e) {
-      log("Error loading TFLite model: $e");
+      log("Error loading model: $e");
+      setState(() {
+        _outputText = "Error loading model: $e";
+      });
     }
   }
 
-  // تهيئة الكاميرا
   Future<void> _initializeCamera() async {
-    final cameras = await availableCameras();
-    final firstCamera = cameras.first;
-
-    _cameraController = CameraController(
-      firstCamera,
-      ResolutionPreset.high,
-      enableAudio: false,
-    );
-
-    await _cameraController.initialize();
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  // التقاط صورة ثابتة وإرسالها إلى النموذج
-  Future<void> _takePictureAndSendToModel() async {
     try {
-      // التقاط صورة ثابتة
-      XFile imageFile = await _cameraController.takePicture();
-
-      debugPrint("Image captured: ${imageFile.path}");
-
-      // تحميل الصورة وتحويلها إلى بيانات بايت
-      File image = File(imageFile.path);
-      List<int> imageBytes = await image.readAsBytes();
-
-      debugPrint("Image size: ${imageBytes.length} bytes");
-
-      // إرسال الصورة للنموذج
-      await _sendToModel(imageBytes);
+      final cameras = await availableCameras();
+      _cameraController = CameraController(
+        cameras.firstWhere((c) => c.lensDirection == CameraLensDirection.back),
+        ResolutionPreset.medium,
+        enableAudio: false,
+      );
+      await _cameraController.initialize();
+      if (mounted) setState(() {});
+      log("Camera initialized successfully");
     } catch (e) {
-      debugPrint("Error capturing image: $e");
+      log("Error initializing camera: $e");
     }
   }
 
-  // إرسال الصورة إلى نموذج TFLite
-  Future<void> _sendToModel(List<int> imageBytes) async {
+  Future<void> _processImage() async {
+    if (_isProcessing || _interpreter == null) {
+      log("Processing skipped: _isProcessing=$_isProcessing, _interpreter=${_interpreter == null ? 'null' : 'loaded'}");
+      setState(() {
+        _outputText = _interpreter == null
+            ? "Model not loaded. Please check logs."
+            : "Processing skipped.";
+      });
+      return;
+    }
+
+    setState(() => _isProcessing = true);
+
     try {
-      // بدء قياس وقت المعالجة
+      log("Capturing image...");
+      final imageFile = await _cameraController.takePicture();
+      log("Image captured: ${imageFile.path}");
+
+      final imageBytes = await File(imageFile.path).readAsBytes();
+      log("Image bytes loaded: ${imageBytes.length} bytes");
+
+      final processedImage = await _preprocessImage(imageBytes);
+      log("Image preprocessed successfully");
+
       final stopwatch = Stopwatch()..start();
-
-      debugPrint(
-          "Input Data (first 100 bytes): ${imageBytes.sublist(0, 100)}...");
-      debugPrint("Input data length: ${imageBytes.length} bytes");
-
-      // التأكد من أن البيانات ليست فارغة
-      if (imageBytes.isEmpty) {
-        debugPrint("Input data is empty!");
-        return;
-      }
-
-      // تحويل الصورة من YUV إلى RGB باستخدام المكتبة
-      final img.Image? convertedImage = img.decodeImage(
-          Uint8List.fromList(imageBytes)); // تحويل الصورة من YUV إلى RGB
-
-      if (convertedImage == null) {
-        debugPrint("Error: Failed to decode image.");
-        return;
-      }
-
-      // تغيير حجم الصورة إلى الحجم المتوقع للنموذج (مثل 224x224)
-      final resizedImage = img.copyResize(convertedImage,
-          width: 224, height: 224); // تعديل الحجم
-
-      debugPrint(
-          "Converted and resized image: ${resizedImage.width}x${resizedImage.height}");
-
-      // تخصيص المخرجات
-      var output = List.filled(1,
-          List.filled(10, 0)); // تخصيص حجم المخرجات بناءً على احتياجات النموذج
-
-      // إرسال البيانات إلى النموذج
-      _interpreter?.run(resizedImage.getBytes(), output);
-
-      // التحقق من النتيجة
-      String result = output.toString();
-      debugPrint("Model Output: $result");
-
-      setState(() {
-        _outputText = result; // تخزين النص الناتج من النموذج
-      });
-
-      // التحدث بالنتيجة
-      await _flutterTts.speak("I detected: $result");
-
+      final output = _runInference(processedImage);
       stopwatch.stop();
-      setState(() {
-        _processingTime =
-            "Processing Time: ${stopwatch.elapsedMilliseconds} ms"; // تحديث وقت المعالجة
-      });
+
+      _handleOutput(output, stopwatch.elapsedMilliseconds);
     } catch (e) {
-      debugPrint("Error processing image: $e");
+      log("Error processing image: $e");
+      setState(() {
+        _outputText = "Error processing image: $e";
+      });
+    } finally {
+      setState(() => _isProcessing = false);
     }
+  }
+
+  Future<Float32List> _preprocessImage(List<int> bytes) async {
+    final image = img.decodeImage(Uint8List.fromList(bytes))!;
+    final oriented = _correctOrientation(image);
+    final resized =
+        img.copyResize(oriented, width: 640, height: 640); // Resize to 640x640
+
+    // Ensure the image is in RGB format (3 channels)
+    final inputBuffer = Float32List(640 * 640 * 3);
+    int pixelIndex = 0;
+
+    for (var y = 0; y < 640; y++) {
+      for (var x = 0; x < 640; x++) {
+        final pixel = resized.getPixel(x, y);
+        inputBuffer[pixelIndex++] = pixel.r / 255.0; // Normalize to [0, 1]
+        inputBuffer[pixelIndex++] = pixel.g / 255.0;
+        inputBuffer[pixelIndex++] = pixel.b / 255.0;
+      }
+    }
+
+    return inputBuffer;
+  }
+
+  img.Image _correctOrientation(img.Image image) {
+    return img.copyRotate(image, angle: 90);
+  }
+
+  List<dynamic> _runInference(Float32List input) {
+    // Get input and output tensor shapes
+    final inputTensor = _interpreter!.getInputTensor(0);
+    final outputTensor = _interpreter!.getOutputTensor(0);
+
+    log("Input Tensor Shape: ${inputTensor.shape}");
+    log("Output Tensor Shape: ${outputTensor.shape}");
+
+    // Ensure the input matches the expected shape
+    if (inputTensor.shape[1] != 640 ||
+        inputTensor.shape[2] != 640 ||
+        inputTensor.shape[3] != 3) {
+      throw Exception(
+          "Input shape mismatch. Expected [1, 640, 640, 3], got ${inputTensor.shape}");
+    }
+
+    // Prepare output buffer
+    final outputShape = outputTensor.shape;
+    final output = List.filled(outputShape.reduce((a, b) => a * b), 0.0)
+        .reshape(outputShape);
+
+    // Run inference
+    _interpreter!.run(input.reshape([1, 640, 640, 3]), output);
+    log("Inference completed: $output");
+
+    return output;
+  }
+
+  void _handleOutput(List<dynamic> output, int elapsedMs) {
+    // Assuming output is a single tensor with shape [1, 84, 8400]
+    final predictions = output[0]; // Shape: [84, 8400]
+
+    // Parse the output to extract bounding boxes, class scores, and class indices
+    final List<Map<String, dynamic>> detectedObjects = [];
+
+    for (var i = 0; i < 8400; i++) {
+      // Extract class scores (last 80 values in each column)
+      final classScores =
+          predictions.sublist(4, 84).map((score) => score[i]).toList();
+
+      // Find the class with the highest score
+      final maxClassIndex = _argMax(classScores);
+      final maxClassScore = classScores[maxClassIndex];
+
+      // Filter out low-confidence predictions
+      if (maxClassScore > 0.5) {
+        // Adjust the threshold as needed
+        // Extract bounding box coordinates (first 4 values in each column)
+        final bbox =
+            predictions.sublist(0, 4).map((coord) => coord[i]).toList();
+
+        detectedObjects.add({
+          'bbox': bbox, // [x, y, width, height]
+          'classIndex': maxClassIndex,
+          'confidence': maxClassScore,
+        });
+      }
+    }
+
+    // Log detected objects
+    log("Detected Objects: $detectedObjects");
+
+    // Update UI with the first detected object (or handle multiple objects)
+    if (detectedObjects.isNotEmpty) {
+      final firstObject = detectedObjects.first;
+      final className =
+          _labels.isNotEmpty && firstObject['classIndex'] < _labels.length
+              ? _labels[firstObject['classIndex']]
+              : 'Unknown';
+
+      setState(() {
+        _outputText =
+            "Detected: $className (${(firstObject['confidence'] * 100).toStringAsFixed(2)}%)";
+        _processingTime = "Processing Time: ${elapsedMs}ms";
+      });
+
+      _flutterTts.speak("I detect $className");
+    } else {
+      setState(() {
+        _outputText = "No objects detected";
+        _processingTime = "Processing Time: ${elapsedMs}ms";
+      });
+
+      _flutterTts.speak("No objects detected");
+    }
+  }
+
+  int _argMax(List<dynamic> list) {
+    return list.asMap().entries.reduce((a, b) => a.value > b.value ? a : b).key;
   }
 
   @override
   void dispose() {
     _cameraController.dispose();
-    _interpreter?.close(); // إغلاق الجلسة بعد الانتهاء
+    _interpreter?.close();
     super.dispose();
   }
 
@@ -164,40 +262,40 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("AI Image Detection")),
-      body: FutureBuilder<void>(
-        future: _initializeCameraFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return Stack(
-              children: [
-                // عرض الكاميرا في وضع بورتريت وتغطية كامل الشاشة
-                Center(
-                  child: Container(
-                    width: double.infinity,
-                    height: MediaQuery.of(context)
-                        .size
-                        .height, // ملء الشاشة بالكامل
+      body: Column(
+        children: [
+          Expanded(
+            child: FutureBuilder<void>(
+              future: _initializeCameraFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return RotatedBox(
+                    quarterTurns: -3,
                     child: CameraPreview(_cameraController),
-                  ),
-                ),
-                // زر لالتقاط الصورة أسفل الكاميرا
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: ElevatedButton(
-                      onPressed: _takePictureAndSendToModel,
-                      child: Text("Capture Image"),
-                    ),
-                  ),
+                  );
+                }
+                return Center(child: Lottie.asset(AppAssets.loding));
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Text(_outputText, style: TextStyle(fontSize: 18)),
+                Text(_processingTime),
+                SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: _isProcessing ? null : _processImage,
+                  child:
+                      Text(_isProcessing ? "Processing..." : "Capture Image"),
                 ),
               ],
-            );
-          } else {
-            return Center(child: Lottie.asset(AppAssets.loding));
-          }
-        },
+            ),
+          ),
+        ],
       ),
     );
   }
 }
+ 
