@@ -67,19 +67,19 @@ class _OnBordingViewState extends State<OnBordingView> {
                     children: const [
                       CustomOnpordingPageView(
                         heading: "Track Their Journey in Real Time",
-                        image: AppAssets.onbording4,
+                        image: AppAssets.onbording1,
                         subHeading:
                             "Easily monitor your loved one's real-time\n location, ensuring they’re always safe and within\n reach—only when they enable it.",
                       ),
                       CustomOnpordingPageView(
                         heading: "Get Alerts When They Go Too Far",
-                        image: AppAssets.onbording4,
+                        image: AppAssets.onbording2,
                         subHeading:
                             "Receive instant notifications if \nyour loved one moves beyond a safe distance.\n You set the limit, and we’ll keep you informed.",
                       ),
                       CustomOnpordingPageView(
                         heading: "Immediate Alerts When It Matters Most",
-                        image: AppAssets.onbording4,
+                        image: AppAssets.onbording3,
                         subHeading:
                             "If your loved one is in danger,\n they can send an emergency alert with their location and a pre-set message directly to you.",
                       ),

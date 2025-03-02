@@ -33,7 +33,7 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
     super.initState();
     _flutterTts = FlutterTts();
 
-    // قفل الاتجاه إلى الوضع العمودي فقط
+    // قفل الاتجاه إلى الوضع العمودي فقط (بورتريت)
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
@@ -110,7 +110,8 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
       }
 
       // تحويل الصورة من YUV إلى RGB باستخدام المكتبة
-      final img.Image? convertedImage = img.decodeImage(Uint8List.fromList(imageBytes)); // تحويل الصورة من YUV إلى RGB
+      final img.Image? convertedImage = img.decodeImage(
+          Uint8List.fromList(imageBytes)); // تحويل الصورة من YUV إلى RGB
 
       if (convertedImage == null) {
         debugPrint("Error: Failed to decode image.");
@@ -118,12 +119,15 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
       }
 
       // تغيير حجم الصورة إلى الحجم المتوقع للنموذج (مثل 224x224)
-      final resizedImage = img.copyResize(convertedImage, width: 224, height: 224); // تعديل الحجم
+      final resizedImage = img.copyResize(convertedImage,
+          width: 224, height: 224); // تعديل الحجم
 
-      debugPrint("Converted and resized image: ${resizedImage.width}x${resizedImage.height}");
+      debugPrint(
+          "Converted and resized image: ${resizedImage.width}x${resizedImage.height}");
 
       // تخصيص المخرجات
-      var output = List.filled(1, List.filled(10, 0)); // تخصيص حجم المخرجات بناءً على احتياجات النموذج
+      var output = List.filled(1,
+          List.filled(10, 0)); // تخصيص حجم المخرجات بناءً على احتياجات النموذج
 
       // إرسال البيانات إلى النموذج
       _interpreter?.run(resizedImage.getBytes(), output);
@@ -160,41 +164,39 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("AI Image Detection")),
-      body: SafeArea(
-        child: Column(
-          children: [
-            FutureBuilder<void>(
-              future: _initializeCameraFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return Center(
-                    child: AspectRatio(
-                      aspectRatio: _cameraController.value.aspectRatio,
-                      child: CameraPreview(_cameraController),
+      body: FutureBuilder<void>(
+        future: _initializeCameraFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return Stack(
+              children: [
+                // عرض الكاميرا في وضع بورتريت وتغطية كامل الشاشة
+                Center(
+                  child: Container(
+                    width: double.infinity,
+                    height: MediaQuery.of(context)
+                        .size
+                        .height, // ملء الشاشة بالكامل
+                    child: CameraPreview(_cameraController),
+                  ),
+                ),
+                // زر لالتقاط الصورة أسفل الكاميرا
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: ElevatedButton(
+                      onPressed: _takePictureAndSendToModel,
+                      child: Text("Capture Image"),
                     ),
-                  );
-                } else {
-                  return Center(child: Lottie.asset(AppAssets.loding));
-                }
-              },
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _takePictureAndSendToModel,
-              child: Text('Capture Image and Send to Model'),
-            ),
-            SizedBox(height: 20),
-            Text(
-              _processingTime, // عرض وقت المعالجة
-              style: TextStyle(fontSize: 16, color: Colors.black),
-            ),
-            SizedBox(height: 10),
-            Text(
-              "Output: $_outputText", // عرض النص الناتج
-              style: TextStyle(fontSize: 16, color: Colors.black),
-            ),
-          ],
-        ),
+                  ),
+                ),
+              ],
+            );
+          } else {
+            return Center(child: Lottie.asset(AppAssets.loding));
+          }
+        },
       ),
     );
   }

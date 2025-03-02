@@ -4,6 +4,7 @@ import 'package:sight_mate_app/core/constants/colors.dart';
 import 'package:sight_mate_app/presentation/screens/BLindLocation_View.dart';
 import 'package:sight_mate_app/presentation/screens/BLindSettings_View.dart';
 import 'package:sight_mate_app/presentation/screens/BlindCamera_view.dart';
+import 'package:sight_mate_app/presentation/screens/blind_map_view.dart';
 class HomeBlindView extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -15,7 +16,7 @@ class _HomeScreenState extends State<HomeBlindView> {
   // List of screens to switch between
   final List<Widget> _screens = [
     VoiceAICommunicationPage(),
-    BlindlocationView(),
+  BlindMapView(),
     BlindsettingsView(),
 
   ];

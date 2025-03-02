@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:meta/meta.dart';
 import 'package:sight_mate_app/core/constants/constans.dart';
 import 'package:sight_mate_app/core/helper/cach_data.dart';
@@ -127,6 +128,51 @@ class DataCubit extends Cubit<DataState> {
     } catch (e) {
       log("Error updating data: ${e.toString()}");
       emit(UpdateDataError(message: e.toString()));
+    }
+  }
+
+// إضافة ميثود جديدة لاسترجاع بيانات جميع المستخدمين الذين يحتوي بياناتهم على lat و lon
+  Future<List<LatLng>> getAllUsersWithLatLon() async {
+    emit(GetDataLoading());
+
+    try {
+      // تحديث الجلسة للتأكد من أن المستخدم قد تم المصادقة عليه
+      await supabase.auth.refreshSession();
+
+      // جلب البيانات من Supabase
+      final response = await supabase
+          .from('addusersdata')
+          .select()
+          .not('lat', 'is', null) // التأكد من أن lat ليس فارغًا
+          .not('lon', 'is', null); // التأكد من أن lon ليس فارغًا
+
+      if (response.isEmpty) {
+        emit(GetDataEmpty());
+        return [];
+      } else {
+        // تحويل البيانات المسترجعة من JSON إلى LatLng
+        List<LatLng> latLngList = response.map((json) {
+          var lat = json['lat'];
+          var lon = json['lon'];
+
+          // التأكد من أن lat و lon ليسا فارغين وتحويلهما إلى double
+          if (lat != null && lon != null) {
+            return LatLng(lat.toDouble(),
+                lon.toDouble()); // تحويل lat و lon إلى LatLng مع التأكد من أن البيانات هي من نوع double
+          } else {
+            return LatLng(
+                0.0, 0.0); // إعادة نقطة افتراضية إذا كانت البيانات غير صالحة
+          }
+        }).toList();
+
+        log("Data retrieved successfully: $latLngList");
+
+        return latLngList; // إرجاع قائمة LatLng
+      }
+    } catch (e) {
+      log("Error retrieving data: ${e.toString()}");
+      emit(GetDataError(message: e.toString()));
+      return [];
     }
   }
 }

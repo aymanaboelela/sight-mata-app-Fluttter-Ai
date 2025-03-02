@@ -9,25 +9,19 @@ import '../../controllers/cubit/map_cubit.dart';
 import '../widgets/floating_action_buttons.dart';
 import '../widgets/loading_indicator.dart';
 
-class UserLocationsMapScreen extends StatefulWidget {
-  const UserLocationsMapScreen({super.key});
+class BlindMapView extends StatefulWidget {
+  const BlindMapView({super.key});
 
   @override
-  State<UserLocationsMapScreen> createState() => _UserLocationsMapScreenState();
+  State<BlindMapView> createState() => _BlindMapViewState();
 }
 
-class _UserLocationsMapScreenState extends State<UserLocationsMapScreen> {
+class _BlindMapViewState extends State<BlindMapView> {
   @override
   void initState() {
     super.initState();
     mapController = MapController();
     context.read<MapCubit>().fetchCurrentLocation();
-    getMarkers();
-    fetchPointsAndUpdateMarkers();
-  }
-
-  void getMarkers() async {
-    dataList = await context.read<DataCubit>().getAllUsersWithLatLon();
   }
 
   List<LatLng> dataList = [];
