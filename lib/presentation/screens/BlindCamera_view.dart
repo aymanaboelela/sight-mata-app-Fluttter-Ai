@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
@@ -8,7 +9,9 @@ import 'package:lottie/lottie.dart';
 import 'package:sight_mate_app/core/constants/app_assets.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:camera/camera.dart';
+import 'package:sight_mate_app/core/constants/colors.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart' as img;
 
 class VoiceAICommunicationPage extends StatefulWidget {
@@ -26,6 +29,8 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
   String _processingTime = "Processing Time: 0.0 ms";
   String _outputText = "Waiting for output...";
   List<String> _labels = []; // List to store class labels
+  bool _isStreaming = false; // To control streaming
+  Timer? _streamTimer; // Timer for streaming frames
 
   @override
   void initState() {
@@ -93,6 +98,41 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
     } catch (e) {
       log("Error initializing camera: $e");
     }
+  }
+
+  void _startStreaming() {
+    if (_isStreaming || _interpreter == null) return;
+
+    setState(() => _isStreaming = true);
+
+    // Process frames every 500ms (adjust as needed)
+    _streamTimer = Timer.periodic(Duration(milliseconds: 500), (timer) async {
+      if (!_isStreaming) {
+        timer.cancel();
+        return;
+      }
+
+      try {
+        final image = await _cameraController.takePicture();
+        final imageBytes = await File(image.path).readAsBytes();
+        final processedImage = await _preprocessImage(imageBytes);
+
+        final stopwatch = Stopwatch()..start();
+        final output = _runInference(processedImage);
+        stopwatch.stop();
+
+        _handleOutput(output, stopwatch.elapsedMilliseconds);
+      } catch (e) {
+        log("Error processing frame: $e");
+      }
+    });
+  }
+
+  void _stopStreaming() {
+    if (!_isStreaming) return;
+
+    setState(() => _isStreaming = false);
+    _streamTimer?.cancel();
   }
 
   Future<void> _processImage() async {
@@ -255,6 +295,7 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
   void dispose() {
     _cameraController.dispose();
     _interpreter?.close();
+    _streamTimer?.cancel();
     super.dispose();
   }
 
@@ -262,9 +303,11 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("AI Image Detection")),
-      body: Column(
+      body: Stack(
         children: [
-          Expanded(
+          SizedBox(
+            height: double.infinity,
+            width: double.infinity,
             child: FutureBuilder<void>(
               future: _initializeCameraFuture,
               builder: (context, snapshot) {
@@ -278,17 +321,38 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
               },
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 50,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(_outputText, style: TextStyle(fontSize: 18)),
                 Text(_processingTime),
                 SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: _isProcessing ? null : _processImage,
-                  child:
-                      Text(_isProcessing ? "Processing..." : "Capture Image"),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed:
+                          _isStreaming ? _stopStreaming : _startStreaming,
+                      child: Text(
+                        _isStreaming ? "Stop Streaming" : "Start Streaming",
+                        style:
+                            const TextStyle(color: AppColors.primaryBlueColor),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    ElevatedButton(
+                      onPressed: _isProcessing ? null : _processImage,
+                      child: Text(
+                        _isProcessing ? "Processing..." : "Capture Image",
+                        style:
+                            const TextStyle(color: AppColors.primaryBlueColor),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -298,4 +362,3 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
     );
   }
 }
- 
