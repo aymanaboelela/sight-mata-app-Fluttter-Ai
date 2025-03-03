@@ -9,7 +9,7 @@ class Custombottom extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: MaterialButton(
-        color:const Color(0xff00487C),
+        color:const Color(0xff46325D),
         minWidth: 380,
         height: 50,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),

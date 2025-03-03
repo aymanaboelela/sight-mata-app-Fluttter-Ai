@@ -12,9 +12,9 @@ class _UsertypeState extends State<Usertype> {
 
   @override
   Widget build(BuildContext context) {
-    return ToggleButtons(
-      children: const [
-        Padding(
+    return  ToggleButtons(
+      children:  [
+       const Padding(
           padding: EdgeInsets.symmetric(horizontal: 20.0),
           child: Text(
             'Visually Impaired',
@@ -40,8 +40,8 @@ class _UsertypeState extends State<Usertype> {
       },
       // Optional styling
       borderRadius: BorderRadius.circular(30),
-      selectedColor: Color(0xff00487C), // selected Text color
-      fillColor: const Color(0xffBACDDB),
+      selectedColor: Colors.white, // selected Text color
+      fillColor: const Color.fromARGB(255, 120, 98, 146),
       color: Colors.black, //  unselected Text color
     );
   }

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sight_mate_app/core/constants/cach_data_const.dart';
 import 'package:sight_mate_app/core/constants/colors.dart';
-import 'package:sight_mate_app/core/helper/cach_data.dart';
 
 class Blindsettingslisttile extends StatefulWidget {
   const Blindsettingslisttile(

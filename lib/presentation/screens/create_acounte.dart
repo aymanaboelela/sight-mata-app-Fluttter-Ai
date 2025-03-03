@@ -77,7 +77,7 @@ class _SignupScreenState extends State<SignupView> {
                             style: TextStyle(
                                 fontSize: 24,
                                 fontFamily: 'Bahnschrift',
-                                color: Color(0xff00487C),
+                                color: Color(0xff46325D),
                                 fontWeight: FontWeight.bold)),
                       ),
                       const SizedBox(
@@ -199,7 +199,7 @@ class _SignupScreenState extends State<SignupView> {
                             child: const Text(
                               "login",
                               style: TextStyle(
-                                  color: Color(0xff00487C),
+                                  color: Color(0xff46325D),
                                   fontSize: 14,
                                   fontFamily: 'Bahnschrift'),
                             ),

@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:sight_mate_app/core/constants/app_assets.dart';
 import 'package:sight_mate_app/core/constants/cach_data_const.dart';
 import 'package:sight_mate_app/core/constants/colors.dart';
-import 'package:sight_mate_app/core/constants/constans.dart';
 import 'package:sight_mate_app/core/helper/cach_data.dart';
 import 'package:sight_mate_app/core/utils/router/app_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
