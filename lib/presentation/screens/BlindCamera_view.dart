@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
@@ -11,7 +10,6 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:camera/camera.dart';
 import 'package:sight_mate_app/core/constants/colors.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart' as img;
 
 class VoiceAICommunicationPage extends StatefulWidget {

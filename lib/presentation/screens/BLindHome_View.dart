@@ -1,7 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:sight_mate_app/core/constants/colors.dart';
-import 'package:sight_mate_app/presentation/screens/BLindLocation_View.dart';
 import 'package:sight_mate_app/presentation/screens/BLindSettings_View.dart';
 import 'package:sight_mate_app/presentation/screens/BlindCamera_view.dart';
 import 'package:sight_mate_app/presentation/screens/blind_map_view.dart';

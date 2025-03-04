@@ -3,8 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:sight_mate_app/controllers/add_data_cubit/data_cubit.dart';
-import 'package:sight_mate_app/models/data_mode.dart';
-
 import '../../controllers/cubit/map_cubit.dart';
 import '../widgets/floating_action_buttons.dart';
 import '../widgets/loading_indicator.dart';
@@ -45,7 +43,6 @@ class _UserLocationsMapScreenState extends State<UserLocationsMapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.sizeOf(context).width;
     return BlocBuilder<MapCubit, MapState>(
       builder: (context, state) {
         return Scaffold(
