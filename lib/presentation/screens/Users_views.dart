@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:sight_mate_app/controllers/add_data_cubit/data_cubit.dart';
 import 'package:sight_mate_app/models/data_mode.dart';
 import 'package:sight_mate_app/presentation/widgets/AddAnotherUser.dart';
@@ -32,6 +33,14 @@ class _UsersViewsState extends State<UsersViews> {
         } else if (state is GetDataError) {
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text(state.message)));
+        } else if (state is DeleteDataSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('User deleted successfully')),
+          );
+        } else if (state is DeleteDataError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
         }
       },
       builder: (context, state) {
@@ -50,8 +59,26 @@ class _UsersViewsState extends State<UsersViews> {
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
-                      return UserListtile(
-                        data: data[index],
+                      return Slidable(
+                        startActionPane: ActionPane(
+                          motion: const DrawerMotion(),
+                          children: [
+                            SlidableAction(
+                              onPressed: (context) {
+                                // Call delete method from the cubit
+                                context.read<DataCubit>().deleteData(
+                                      id: data[index].id!,
+                                    );
+                              },
+                              backgroundColor: Colors.red,
+                              icon: Icons.delete,
+                              label: 'Delete',
+                            ),
+                          ],
+                        ),
+                        child: UserListtile(
+                          data: data[index],
+                        ),
                       );
                     },
                     itemCount: data.length,

@@ -13,6 +13,7 @@ import 'package:sight_mate_app/presentation/screens/Distance_Off_view.dart';
 import 'package:sight_mate_app/presentation/screens/MyProfile_view.dart';
 import 'package:sight_mate_app/presentation/screens/UserLocationNow_view.dart';
 import 'package:sight_mate_app/presentation/screens/create_acounte.dart';
+import 'package:sight_mate_app/presentation/screens/forget_paswoed.dart';
 import 'package:sight_mate_app/presentation/screens/home_view.dart';
 import 'package:sight_mate_app/presentation/screens/login_view.dart';
 import 'package:sight_mate_app/presentation/screens/on_bording_view.dart';
@@ -34,6 +35,7 @@ abstract class AppRouter {
   static const KBLindHomeView = '/BLindHomeView';
   static const KGeneralSettings = '/GeneralSettings';
   static const distanceSelectScreen = '/distanceSelectScreen';
+  static const kforgetPassword = '/forgetPassword';
 
   // edit house
 
@@ -95,6 +97,11 @@ abstract class AppRouter {
         path: KGeneralSettings,
         pageBuilder: (context, state) =>
             PageTransitionManager.fadeTransition(Generalsettings()),
+      ),
+      GoRoute(
+        path: kforgetPassword,
+        pageBuilder: (context, state) =>
+            PageTransitionManager.fadeTransition(ForgotPassword()),
       ),
       GoRoute(
           path: kUserLocationNow,

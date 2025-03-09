@@ -104,7 +104,7 @@ class _UserlocationnowViewState extends State<UserlocationnowView> {
                               color: Color(0xff5484A7),
                             ),
                             child: Text(
-                              widget.data.username,
+                              widget.data.username ?? "user",
                               style: const TextStyle(
                                   color: Colors.white, fontSize: 17),
                             ),
@@ -150,7 +150,7 @@ ${widget.data.lon}
                                   fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              widget.data.username,
+                              widget.data.username ?? "user",
                               style: const TextStyle(
                                   color: AppColors.primaryBlueColor,
                                   fontSize: 17,
@@ -279,6 +279,7 @@ ${widget.data.lon}
                             ? Savebutton(
                                 onPressed: () {
                                   context.read<DataCubit>().updateData(
+                                        id: widget.data.id!,
                                         email: widget.data.email,
                                         name: widget.data.username,
                                         distance: newDistance,

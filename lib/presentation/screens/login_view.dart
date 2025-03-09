@@ -89,12 +89,17 @@ class _LoginScreenState extends State<LoginView> {
                       const SizedBox(
                         height: 15,
                       ),
-                      const Text(
-                        "forget Password?",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontFamily: 'Bahnschrift'),
+                      GestureDetector(
+                        onTap: () {
+                          GoRouter.of(context).pushReplacement(AppRouter.kforgetPassword);
+                        },
+                        child: const Text(
+                          "forget Password?",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontFamily: 'Bahnschrift'),
+                        ),
                       ),
                       const SizedBox(
                         height: 75,

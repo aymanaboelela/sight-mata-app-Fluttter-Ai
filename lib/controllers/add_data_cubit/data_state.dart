@@ -36,3 +36,13 @@ class UpdateDataError extends DataState {
   final String message;
   UpdateDataError({required this.message});
 }
+// حالات جديدة لحذف البيانات
+class DeleteDataLoading extends DataState {}
+
+class DeleteDataSuccess extends DataState {}
+
+class DeleteDataError extends DataState {
+  final String message;
+
+  DeleteDataError({required this.message});
+}

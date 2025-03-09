@@ -58,30 +58,6 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<void> resendVerificationEmail(String email) async {}
-
-  // Future<void> verifyOtp({
-  //   String? email,
-  //   String? phone,
-  //   required String token,
-  //   required OtpType type,
-  // }) async {
-  //   emit(OTPVerificationLoading());
-  //   try {
-  //     await supabase.auth.verifyOTP(
-  //       email: email,
-  //       phone: phone,
-  //       token: token,
-  //       type: type,
-  //     );
-  //     emit(LoginSuccess()); // Assuming successful verification logs user in
-  //   } on AuthException catch (e) {
-  //     emit(OTPVerificationError(message: e.message));
-  //   } catch (e) {
-  //     emit(OTPVerificationError(message: e.toString()));
-  //   }
-  // }
-
   Future<void> login({
     required String email,
     required String password,
@@ -104,7 +80,8 @@ class AuthCubit extends Cubit<AuthState> {
       CacheData.setData(
           key: phoneCahnged, value: response.user?.userMetadata?['phone']);
       CacheData.setData(
-          key: AppCacheData.isAdmin, value: response.user?.userMetadata?["is_admin"]);
+          key: AppCacheData.isAdmin,
+          value: response.user?.userMetadata?["is_admin"]);
       CacheData.setData(key: emailChanged, value: email);
     } on AuthException catch (e) {
       log("login the error is **** ${e.message}");
@@ -148,12 +125,35 @@ class AuthCubit extends Cubit<AuthState> {
       emit(ResetPasswordError(message: e.toString()));
     }
   }
-  // Future<void> checkAuth() async {
-  //   final user = supabase.auth.currentUser;
-  //   if (user != null) {
-  //     emit(LoginSuccess());
-  //   } else {
-  //     emit(AuthInitial());
-  //   }
-  // }
+
+  Future<void> resetPasswordWithOTP({
+    required String email,
+    required String resetToken,
+    required String newPassword,
+  }) async {
+    emit(ResetPasswordLoading());
+
+    try {
+      // Verify the OTP (token) to confirm the reset process
+      final recovery = await supabase.auth.verifyOTP(
+        
+        email: email,
+        token: resetToken,
+        type: OtpType.recovery, // Type: recovery
+      );
+
+      print("OTP verification result: $recovery");
+
+      // Update the password for the user
+      await supabase.auth.updateUser(
+        UserAttributes(password: newPassword),
+      );
+
+      emit(ResetPasswordSuccess());
+    } on AuthException catch (e) {
+      emit(ResetPasswordError(message: e.message));
+    } catch (e) {
+      emit(ResetPasswordError(message: e.toString()));
+    }
+  }
 }

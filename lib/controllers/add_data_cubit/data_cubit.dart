@@ -88,6 +88,7 @@ class DataCubit extends Cubit<DataState> {
   }
 
   Future<void> updateData({
+    required String id,
     String? name,
     String? email,
     double? distance,
@@ -109,6 +110,7 @@ class DataCubit extends Cubit<DataState> {
 
       log("User authenticated: ${user.id}");
       DataModel userData = DataModel(
+        id: id,
         userid: user.id,
         username: name!,
         email: email!,
@@ -120,7 +122,7 @@ class DataCubit extends Cubit<DataState> {
       final response = await supabase
           .from('addusersdata')
           .update(userData.toJson())
-          .eq('userid', user.id) // التأكد من التحديث بناءً على الـ userid
+          .eq('id', id)
           .select();
       getData();
       log("Response from Supabase: ${response.toString()}");
@@ -173,6 +175,21 @@ class DataCubit extends Cubit<DataState> {
       log("Error retrieving data: ${e.toString()}");
       emit(GetDataError(message: e.toString()));
       return [];
+    }
+  }
+
+  Future<void> deleteData({required String id}) async {
+    emit(DeleteDataLoading());
+
+    try {
+      await supabase.auth.refreshSession();
+      await supabase.from('addusersdata').delete().eq('id', id);
+
+      getData();
+      emit(DeleteDataSuccess());
+    } catch (e) {
+      log("Error deleting data: ${e.toString()}");
+      emit(DeleteDataError(message: e.toString()));
     }
   }
 }

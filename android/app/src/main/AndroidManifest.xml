@@ -44,13 +44,13 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-
     </application>
 
     <!-- السماح بالبحث عن التطبيقات الخارجية -->
     <queries>
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
+            <!-- <action android:name="android.intent.action.TTS_SERVICE" /> -->
             <data android:mimeType="text/plain"/>
         </intent>
     </queries>

@@ -134,12 +134,18 @@ class _OnBordingViewState extends State<OnBordingView> {
                   ),
                 ),
                 SizedBox(height: 22.h),
-                if (_currentPage < 3)
-                  Center(child: OnBordingDots(index: _currentPage.clamp(0, 2))),
-                if (_currentPage > 3 && _currentPage < 6)
-                  Center(
-                      child:
-                          OnBordingDots(index: (_currentPage - 4).clamp(0, 2))),
+                // if (_currentPage < 3)
+                //   Center(
+                //       child: SizedBox(
+                //           height: 20.h,
+                //           child:
+                //               OnBordingDots(index: _currentPage.clamp(0, 2)))),
+                // if (_currentPage > 3 && _currentPage < 6)
+                //   Center(
+                //       child: SizedBox(
+                //           height: 20.h,
+                //           child: OnBordingDots(
+                //               index: (_currentPage - 4).clamp(0, 2)))),
                 if (_currentPage > 3)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

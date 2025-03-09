@@ -1,4 +1,5 @@
 class DataModel {
+  final String? id;
   final String userid;
   final String username;
   final String email;
@@ -7,6 +8,7 @@ class DataModel {
   final double? lon;
 
   DataModel({
+    this.id,
     required this.userid,
     required this.username,
     required this.email,
@@ -18,6 +20,7 @@ class DataModel {
   // تحويل البيانات من JSON
   factory DataModel.fromJson(Map<String, dynamic> json) {
     return DataModel(
+      id: json['id'] ?? '', // التأكد من أن id موجود في البيانات
       userid: json['userid'],
       username: json['username'],
       email: json['email'],
@@ -32,6 +35,7 @@ class DataModel {
   // تحويل الكائن إلى JSON لإرساله إلى Supabase
   Map<String, dynamic> toJson() {
     return {
+      "id": id,
       'userid': userid,
       'username': username,
       'email': email,

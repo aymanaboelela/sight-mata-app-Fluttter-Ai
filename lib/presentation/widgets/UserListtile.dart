@@ -25,17 +25,14 @@ class UserListtile extends StatelessWidget {
             color: Colors.grey,
           ),
           title: Text(
-            data.username,
+            data.username?? "user",
             style: const TextStyle(
                 color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          trailing: IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.arrow_forward,
-              size: 35,
-              color: Colors.grey,
-            ),
+          trailing: Icon(
+            Icons.arrow_forward,
+            size: 35,
+            color: Colors.grey,
           ),
         ),
       ),
