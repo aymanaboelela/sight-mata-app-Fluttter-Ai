@@ -1,4 +1,3 @@
-import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 
 import 'package:flutter/material.dart';
@@ -49,7 +48,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (_) => MapCubit(
               MapsRepository(MapsWebService(Dio())), LocationService()),
-          child: MapScreen(
+          child: const MapScreen(
           ),
         ),
         BlocProvider<AuthCubit>(
