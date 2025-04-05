@@ -1,0 +1,2 @@
+D:/freelance/sight-mata-app-Fluttter-Ai/android/app/.cxx/RelWithDebInfo/594b6z4f/x86_64/CMakeFiles/edit_cache.dir
+D:/freelance/sight-mata-app-Fluttter-Ai/android/app/.cxx/RelWithDebInfo/594b6z4f/x86_64/CMakeFiles/rebuild_cache.dir

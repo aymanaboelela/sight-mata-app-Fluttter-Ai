@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:math' as math;
 import 'dart:io';
+import 'dart:isolate';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,19 +30,21 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
   List<String> _labels = [];
   bool _isStreaming = false;
   Timer? _streamTimer;
+  late Isolate _isolate;
+  late SendPort _sendPort;
 
   @override
   void initState() {
     super.initState();
     _initializeSystem();
     _initializeCameraFuture = _initializeCamera();
+    _startIsolate();
   }
 
   void _initializeSystem() async {
     _flutterTts = FlutterTts();
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-
     await _loadModel();
     await _loadLabels();
   }
@@ -91,26 +93,84 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
     }
   }
 
-  void _startStreaming() {
+  void _startIsolate() async {
+    final receivePort = ReceivePort();
+    _isolate = await Isolate.spawn(_isolateEntry, receivePort.sendPort);
+    _sendPort = await receivePort.first;
+  }
+
+  static void _isolateEntry(SendPort sendPort) async {
+    final receivePort = ReceivePort();
+    sendPort.send(receivePort.sendPort);
+
+    await for (final message in receivePort) {
+      if (message is List) {
+        final imageBytes = message[0] as Uint8List;
+        final sendResultPort = message[1] as SendPort;
+        try {
+          final processedImage = await _preprocessImage(imageBytes);
+          sendResultPort.send(processedImage);
+        } catch (e) {
+          sendResultPort.send(e);
+        }
+      }
+    }
+  }
+
+  Future<Float32List> _preprocessImageInIsolate(Uint8List imageBytes) async {
+    final receivePort = ReceivePort();
+    _sendPort.send([imageBytes, receivePort.sendPort]);
+    final result = await receivePort.first;
+    if (result is Float32List) {
+      return result;
+    } else {
+      throw result;
+    }
+  }
+
+  static Future<Float32List> _preprocessImage(List<int> bytes) async {
+    try {
+      final image = img.decodeImage(Uint8List.fromList(bytes))!;
+      final oriented = img.copyRotate(image, angle: 90);
+      final resized = img.copyResize(oriented, width: 256, height: 256);
+
+      final inputBuffer = Float32List(256 * 256 * 3);
+      int pixelIndex = 0;
+
+      for (var y = 0; y < 256; y++) {
+        for (var x = 0; x < 256; x++) {
+          final pixel = resized.getPixel(x, y);
+          inputBuffer[pixelIndex++] = pixel.r / 255.0;
+          inputBuffer[pixelIndex++] = pixel.g / 255.0;
+          inputBuffer[pixelIndex++] = pixel.b / 255.0;
+        }
+      }
+      return inputBuffer;
+    } catch (e) {
+      throw Exception("Image processing failed: ${e.toString()}");
+    }
+  }
+
+  void _startStreaming() async {
     if (_isStreaming || _interpreter == null) return;
     setState(() => _isStreaming = true);
-    _streamTimer = Timer.periodic(Duration(milliseconds: 500), (timer) async {
-      if (!_isStreaming) {
-        timer.cancel();
-        return;
-      }
+
+    while (_isStreaming) {
       try {
         final image = await _cameraController.takePicture();
         final imageBytes = await File(image.path).readAsBytes();
-        final processedImage = await _preprocessImage(imageBytes);
+        final processedImage = await _preprocessImageInIsolate(imageBytes);
         final stopwatch = Stopwatch()..start();
         final output = _runInference(processedImage);
         stopwatch.stop();
         _handleOutput(output, stopwatch.elapsedMilliseconds);
+        // add custom delay duration in settings screen
+        // Add a 1500ms delay after processing (before the next iteration)
+        await Future.delayed(const Duration(milliseconds: 1500));
       } catch (e) {
         log("Stream error: ${e.toString()}");
       }
-    });
+    }
   }
 
   void _stopStreaming() {
@@ -126,7 +186,7 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
     try {
       final imageFile = await _cameraController.takePicture();
       final imageBytes = await File(imageFile.path).readAsBytes();
-      final processedImage = await _preprocessImage(imageBytes);
+      final processedImage = await _preprocessImageInIsolate(imageBytes);
       final stopwatch = Stopwatch()..start();
       final output = _runInference(processedImage);
       stopwatch.stop();
@@ -139,71 +199,49 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
     }
   }
 
-  Future<Float32List> _preprocessImage(List<int> bytes) async {
-    try {
-      final image = img.decodeImage(Uint8List.fromList(bytes))!;
-      final oriented = img.copyRotate(image, angle: 90);
-      final resized = img.copyResize(oriented, width: 256, height: 256);
-
-      final inputBuffer = Float32List(256 * 256 * 3);
-      int pixelIndex = 0;
-
-      for (var y = 0; y < 256; y++) {
-        for (var x = 0; x < 256; x++) {
-          final pixel = resized.getPixel(x, y);
-          inputBuffer[pixelIndex++] = (pixel.r - 127.5) / 127.5;
-          inputBuffer[pixelIndex++] = (pixel.g - 127.5) / 127.5;
-          inputBuffer[pixelIndex++] = (pixel.b - 127.5) / 127.5;
-        }
-      }
-      return inputBuffer;
-    } catch (e) {
-      throw Exception("Image processing failed: ${e.toString()}");
-    }
-  }
-
-  List<double> _runInference(Float32List input) {
+  List<dynamic> _runInference(Float32List input) {
     try {
       final outputShape = _interpreter!.getOutputTensor(0).shape;
-      final output = List<double>.filled(outputShape.reduce((a, b) => a * b), 0.0);
-      _interpreter!.run(input, output);
+      final output = List.filled(outputShape.reduce((a, b) => a * b), 0.0)
+          .reshape(outputShape);
+      _interpreter!.run(input.reshape([1, 256, 256, 3]), output);
       return output;
     } catch (e) {
       throw Exception("Inference failed: ${e.toString()}");
     }
   }
 
-  List<double> _softmax(List<double> logits) {
-    final double maxLogit = logits.reduce((a, b) => a > b ? a : b);
-    final double sum = logits
-        .map((l) => math.exp(l - maxLogit))
-        .fold(0.0, (a, b) => a + b);
-    return logits.map((l) => math.exp(l - maxLogit) / sum).toList();
-  }
-
-  void _handleOutput(List<double> output, int elapsedMs) {
+  void _handleOutput(List<dynamic> output, int elapsedMs) {
     try {
-      final probabilities = _softmax(output);
-      final maxProbability = probabilities.reduce(math.max);
-      final maxClassIndex = probabilities.indexOf(maxProbability);
-
-      if (maxProbability > 0.5 && maxClassIndex < _labels.length) {
-        final className = _labels[maxClassIndex];
-        setState(() {
-          _outputText = "Detected: $className (${(maxProbability * 100).toStringAsFixed(2)}%)";
-          _processingTime = "Processing Time: ${elapsedMs}ms";
-        });
-        _flutterTts.speak("I detect $className");
-      } else {
-        setState(() {
-          _outputText = "No confident detection (${(maxProbability * 100).toStringAsFixed(2)}%)";
-          _processingTime = "Processing Time: ${elapsedMs}ms";
-        });
-      }
+      final predictions = output[0] as List<dynamic>;
+      final maxIndex = _argMax(predictions);
+      final maxConfidence = predictions[maxIndex].toDouble();
+      final className = _labels.isNotEmpty && maxIndex < _labels.length
+          ? _labels[maxIndex]
+          : 'Unknown';
+      setState(() {
+        _outputText =
+            "Detected: $className (${(maxConfidence * 100).toStringAsFixed(2)}%)";
+        _processingTime = "Processing Time: ${elapsedMs}ms";
+      });
+      _flutterTts.speak("I detect $className");
     } catch (e) {
       log("Output handling error: ${e.toString()}");
       setState(() => _outputText = "Output error: ${e.toString()}");
     }
+  }
+
+  int _argMax(List<dynamic> list) {
+    int maxIndex = 0;
+    double maxValue = list[0].toDouble();
+    for (int i = 1; i < list.length; i++) {
+      final currentValue = list[i].toDouble();
+      if (currentValue > maxValue) {
+        maxValue = currentValue;
+        maxIndex = i;
+      }
+    }
+    return maxIndex;
   }
 
   @override
@@ -212,13 +250,13 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
     _interpreter?.close();
     _streamTimer?.cancel();
     _flutterTts.stop();
+    _isolate.kill();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("AI Image Detection")),
       body: Stack(
         children: [
           SizedBox(
@@ -246,9 +284,11 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
               color: Colors.black54,
               child: Column(
                 children: [
-                  Text(_outputText, 
+                  Text(_outputText,
+                      textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 18, color: Colors.white)),
-                  Text(_processingTime, 
+                  Text(_processingTime,
+                      textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white70)),
                   SizedBox(height: 16),
                   Row(
@@ -256,7 +296,8 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
                     children: [
                       _buildActionButton(
                         label: _isStreaming ? "Stop" : "Stream",
-                        onPressed: _isStreaming ? _stopStreaming : _startStreaming,
+                        onPressed:
+                            _isStreaming ? _stopStreaming : _startStreaming,
                         isActive: _isStreaming,
                       ),
                       SizedBox(width: 20),
