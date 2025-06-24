@@ -10,6 +10,7 @@ import 'package:sight_mate_app/core/helper/cach_data.dart';
 import 'package:sight_mate_app/core/utils/router/app_router.dart';
 import 'package:sight_mate_app/presentation/widgets/CustomButton.dart';
 import 'package:sight_mate_app/presentation/widgets/CustomTextFormField.dart';
+import 'package:easy_localization/easy_localization.dart';  // Import easy_localization
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -23,19 +24,17 @@ class _LoginScreenState extends State<LoginView> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is LoginSuccess) {
-          if(CacheData.getData(key: AppCacheData.isAdmin) == true)
-          {
- GoRouter.of(context).pushReplacement(AppRouter.kHomeView);
+          if(CacheData.getData(key: AppCacheData.isAdmin) == true) {
+            GoRouter.of(context).pushReplacement(AppRouter.kHomeView);
+          } else {
+            GoRouter.of(context).pushReplacement(AppRouter.KBLindHomeView);
           }
-          else{
- GoRouter.of(context).pushReplacement(AppRouter.KBLindHomeView);
-          }
-         
         } else if (state is LoginError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.message)),
@@ -55,74 +54,66 @@ class _LoginScreenState extends State<LoginView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      const Center(
-                        child: Text("Log in",
+                       Center(
+                        child: Text("login".tr(),  // Using easy_localization for translation
                             style: TextStyle(
                                 fontSize: 24,
                                 fontFamily: 'Bahnschrift',
                                 color: Color(0xff46325D),
                                 fontWeight: FontWeight.bold)),
                       ),
-                      const SizedBox(
-                        height: 60,
-                      ),
+                      const SizedBox(height: 60),
                       Customtextformfield(
                         controller: emailController,
-                        label: "Email",
-                        hintText: "Enter your email",
+                        label: "email".tr(),  // Using easy_localization for translation
+                        hintText: "enter_email".tr(),  // Using easy_localization for translation
                         prefixIcon: Icons.email_outlined,
                       ),
-                      const SizedBox(
-                        height: 25,
-                      ),
+                      const SizedBox(height: 25),
                       Customtextformfield(
-                          controller: passwordController,
-                          label: "Password",
-                          hintText: "Enter a password",
-                          prefixIcon: Icons.lock_outline,
-                          obscureText: !isPasswordVisible,
-                          onSuffixIconTap: () {
-                            setState(() {
-                              isPasswordVisible = !isPasswordVisible;
-                            });
-                          }),
-                      const SizedBox(
-                        height: 15,
+                        controller: passwordController,
+                        label: "password".tr(),  // Using easy_localization for translation
+                        hintText: "enter_password".tr(),  // Using easy_localization for translation
+                        prefixIcon: Icons.lock_outline,
+                        obscureText: !isPasswordVisible,
+                        onSuffixIconTap: () {
+                          setState(() {
+                            isPasswordVisible = !isPasswordVisible;
+                          });
+                        },
                       ),
+                      const SizedBox(height: 15),
                       GestureDetector(
                         onTap: () {
                           GoRouter.of(context).pushReplacement(AppRouter.kforgetPassword);
                         },
-                        child: const Text(
-                          "forget Password?",
-                          style: TextStyle(
+                        child: Text(
+                          "forgot_password".tr(),  // Using easy_localization for translation
+                          style: const TextStyle(
                               color: Colors.black,
                               fontSize: 14,
                               fontFamily: 'Bahnschrift'),
                         ),
                       ),
-                      const SizedBox(
-                        height: 75,
-                      ),
+                      const SizedBox(height: 75),
                       Custombottom(
-                        text: "Log in",
+                        text: "login".tr(),  // Using easy_localization for translation
                         onpressed: () {
                           if (formKey.currentState?.validate() ?? false) {
                             context.read<AuthCubit>().login(
-                                email: emailController.text,
-                                password: passwordController.text);
+                              email: emailController.text,
+                              password: passwordController.text
+                            );
                           }
                         },
                       ),
-                      const SizedBox(
-                        height: 20,
-                      ),
+                      const SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text(
-                            "Don't have an account ?",
-                            style: TextStyle(
+                          Text(
+                            "dont_have_account".tr(),  // Using easy_localization for translation
+                            style: const TextStyle(
                                 color: Colors.black,
                                 fontSize: 14,
                                 fontFamily: 'Bahnschrift'),
@@ -132,9 +123,9 @@ class _LoginScreenState extends State<LoginView> {
                               GoRouter.of(context)
                                   .pushReplacement(AppRouter.kSignUp);
                             },
-                            child: const Text(
-                              "Sign up",
-                              style: TextStyle(
+                            child: Text(
+                              "sign_up".tr(),  // Using easy_localization for translation
+                              style: const TextStyle(
                                   color: Color(0xff46325D),
                                   fontSize: 14,
                                   fontFamily: 'Bahnschrift'),

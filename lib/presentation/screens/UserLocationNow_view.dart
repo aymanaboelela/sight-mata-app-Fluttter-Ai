@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +14,7 @@ import 'package:sight_mate_app/presentation/screens/map.dart';
 import 'package:sight_mate_app/presentation/widgets/DIstanceAlert.dart';
 import 'package:sight_mate_app/presentation/widgets/Switched_ON.dart';
 import 'package:sight_mate_app/presentation/widgets/saveButton.dart';
+import 'package:easy_localization/easy_localization.dart'; // Import easy_localization
 
 import '../../models/data_mode.dart';
 
@@ -37,6 +37,7 @@ class _UserlocationnowViewState extends State<UserlocationnowView> {
 
   double? newDistance;
 
+  @override
   Widget build(BuildContext context) {
     String name = CacheData.getData(key: userNameUser);
     return Scaffold(
@@ -62,7 +63,7 @@ class _UserlocationnowViewState extends State<UserlocationnowView> {
               width: 10,
             ),
             Text(
-              "Hi, $name",
+              "hi_user".tr(namedArgs: {'name': name}), // Localized text with dynamic name
               style: const TextStyle(
                   color: Colors.white,
                   fontSize: 18,
@@ -112,7 +113,6 @@ class _UserlocationnowViewState extends State<UserlocationnowView> {
                           Spacer(),
                         ],
                       ),
-
                       const SizedBox(
                         height: 20,
                       ),
@@ -123,8 +123,8 @@ class _UserlocationnowViewState extends State<UserlocationnowView> {
                           log('''
 lat ${latLng.latitude}
 lng ${latLng.latitude}
- 
- //\\//\\
+
+ //\\//
 ${widget.data.lat}
 ${widget.data.lon}
 ''');
@@ -142,24 +142,10 @@ ${widget.data.lon}
                               size: 40,
                               color: Colors.black,
                             ),
-                            const Text(
-                              "Show ",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.bold),
-                            ),
                             Text(
-                              widget.data.username ?? "user",
+                              "show_location_now".tr(namedArgs: {'username': widget.data.username ?? "user"}), // Localized dynamic text
                               style: const TextStyle(
                                   color: AppColors.primaryBlueColor,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            const Text(
-                              " Location Now",
-                              style: TextStyle(
-                                  color: Colors.black,
                                   fontSize: 17,
                                   fontWeight: FontWeight.bold),
                             ),
@@ -181,9 +167,9 @@ ${widget.data.lon}
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            "Set Distance Alert",
-                            style: TextStyle(
+                          Text(
+                            "set_distance_alert".tr(), // Localized text
+                            style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.primaryBlueColor),
@@ -215,7 +201,7 @@ ${widget.data.lon}
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 5.0),
                                       child: Text(
-                                        isSwitched ? "on" : "off",
+                                        isSwitched ? "on".tr() : "off".tr(), // Localized on/off
                                         style: TextStyle(
                                           color: isSwitched
                                               ? Colors.white

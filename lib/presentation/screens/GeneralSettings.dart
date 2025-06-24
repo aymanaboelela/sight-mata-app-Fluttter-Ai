@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sight_mate_app/core/constants/colors.dart';
+import 'package:easy_localization/easy_localization.dart'; // Import easy_localization
 
 class Generalsettings extends StatefulWidget {
   const Generalsettings({super.key});
@@ -17,9 +18,9 @@ class _GeneralsettingsState extends State<Generalsettings> {
       appBar: AppBar(
         backgroundColor: AppColors.primaryBlueColor,
         centerTitle: true,
-        title: const Text(
-          "General",
-          style: TextStyle(
+        title: Text(
+          "General".tr(), // Translated text
+          style: const TextStyle(
               fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
         ),
       ),
@@ -37,28 +38,24 @@ class _GeneralsettingsState extends State<Generalsettings> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    "Volume Level",
-                    style: TextStyle(
+                  Text(
+                    "Volume Level".tr(), // Translated text
+                    style: const TextStyle(
                         color: Colors.black,
                         fontSize: 16,
                         fontWeight: FontWeight.bold),
                   ),
                   Row(
                     children: [
-                      const Image(
-                          image: AssetImage("assets/images/Vector (3).png")),
+                      const Image(image: AssetImage("assets/images/Vector (3).png")),
                       Slider(
                           value: _currentValue,
                           min: 0,
                           max: 200,
-                          divisions:
-                              20,
+                          divisions: 20,
                           label: _currentValue.round().toString(),
-                          activeColor:
-                              AppColors.primaryBlueColor, 
-                          inactiveColor:
-                              Colors.grey,
+                          activeColor: AppColors.primaryBlueColor,
+                          inactiveColor: Colors.grey,
                           onChanged: (double newValue) {
                             setState(() {
                               _currentValue = newValue;
@@ -69,51 +66,54 @@ class _GeneralsettingsState extends State<Generalsettings> {
                   ),
                 ],
               ),
-              
             ),
-            SizedBox(height: 30,),
+            const SizedBox(height: 30),
             Container(
               height: 130,
               width: double.infinity,
-              padding: const EdgeInsets.only(top: 10, left: 10,right: 10),
+              padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: const Color(0xffBFD1DE)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Row(
+                  Row(
                     children: [
-                      Image(image: AssetImage("assets/images/Vector (5).png")),
-                      SizedBox(width: 10,),
-                      Text("Select Language",style: TextStyle(fontWeight: FontWeight.bold),)
+                      const Image(image: AssetImage("assets/images/Vector (5).png")),
+                      const SizedBox(width: 10),
+                      Text(
+                        "Select Language".tr(), // Translated text
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      )
                     ],
                   ),
-                Padding(
-        padding: const EdgeInsets.only(left: 10,right: 10,top: 20),
-        child: Container(
-          color: Colors.white,
-          child: TextFormField(
-            decoration: InputDecoration(
-              labelText: 'Language',
-              hintText: 'Enter your language',
-              border: OutlineInputBorder(),
-            ),
-            onChanged: (value) {
-              // Handle the input value
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter your language';
-              }
-              return null;
-            },
-          ),
-        ),
-      ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
+                    child: Container(
+                      color: Colors.white,
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'Language'.tr(), // Translated text
+                          hintText: 'Enter your language'.tr(), // Translated text
+                          border: const OutlineInputBorder(),
+                        ),
+                        onChanged: (value) {
+                          // Handle the input value
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your language'.tr(); // Translated text
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                  ),
                 ],
               ),
-        )],
+            ),
+          ],
         ),
       ),
     );

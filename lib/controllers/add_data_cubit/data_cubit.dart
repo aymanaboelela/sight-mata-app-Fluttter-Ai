@@ -192,4 +192,19 @@ class DataCubit extends Cubit<DataState> {
       emit(DeleteDataError(message: e.toString()));
     }
   }
+
+  Future<void> deleteObject({required String id}) async {
+    emit(DeleteDataLoading());
+
+    try {
+      await supabase.auth.refreshSession();
+      await supabase.from('addusersdata').delete().eq('id', id);
+
+      getData();
+      emit(DeleteDataSuccess());
+    } catch (e) {
+      log("Error deleting object: ${e.toString()}");
+      emit(DeleteDataError(message: e.toString()));
+    }
+  }
 }

@@ -2,8 +2,9 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sight_mate_app/controllers/auth/auth_cubit.dart';
-import 'package:sight_mate_app/presentation/widgets/BlueButton.dart'; // استيراد زر BlueButton
-import 'package:sight_mate_app/core/constants/colors.dart'; // استيراد الألوان
+import 'package:sight_mate_app/presentation/widgets/BlueButton.dart'; 
+import 'package:sight_mate_app/core/constants/colors.dart'; 
+import 'package:easy_localization/easy_localization.dart'; // Import easy_localization
 
 class ResetPassword extends StatefulWidget {
   const ResetPassword({Key? key}) : super(key: key);
@@ -24,7 +25,7 @@ class _ResetPasswordState extends State<ResetPassword> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Reset Password'),
+        title: Text('reset_password'.tr()), // Localized title
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -36,13 +37,13 @@ class _ResetPasswordState extends State<ResetPassword> {
               // Reset Token Field
               TextFormField(
                 controller: resetTokenC,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(borderRadius: borderRadiusStd),
-                  hintText: 'Reset Token',
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(borderRadius: borderRadiusStd),
+                  hintText: 'reset_token'.tr(), // Localized hint text
                 ),
                 validator: (value) {
                   if (value!.isEmpty || value.length < 6) {
-                    return 'Invalid token!';
+                    return 'token_invalid'.tr(); // Localized error
                   }
                   return null;
                 },
@@ -51,13 +52,13 @@ class _ResetPasswordState extends State<ResetPassword> {
               // Email Field
               TextFormField(
                 controller: emailC,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(borderRadius: borderRadiusStd),
-                  hintText: 'Email',
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(borderRadius: borderRadiusStd),
+                  hintText: 'email'.tr(), // Localized hint text
                 ),
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: (value) => !EmailValidator.validate(value!)
-                    ? 'Invalid email format!'
+                    ? 'email_invalid'.tr() // Localized error
                     : null,
               ),
               formSpacer,
@@ -67,7 +68,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                 obscureText: _passwordVisible,
                 decoration: InputDecoration(
                   border: const OutlineInputBorder(borderRadius: borderRadiusStd),
-                  hintText: 'New Password',
+                  hintText: 'new_password'.tr(), // Localized hint text
                   suffixIcon: IconButton(
                     onPressed: () {
                       setState(() {
@@ -81,7 +82,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                 ),
                 validator: (value) {
                   if (value!.isEmpty || value.length < 6) {
-                    return 'Password must be at least 6 characters!';
+                    return 'password_invalid'.tr(); // Localized error
                   }
                   return null;
                 },
@@ -89,7 +90,7 @@ class _ResetPasswordState extends State<ResetPassword> {
               formSpacer,
               // Reset Password Button
               BlueButton(
-                teks: 'Reset Password',
+                teks: 'reset_password_button'.tr(), // Localized button text
                 padding: 0,
                 onPressed: () async {
                   if (formKey.currentState!.validate()) {
@@ -120,7 +121,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                     }
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Please fill in the fields correctly!')),
+                      SnackBar(content: Text('fill_fields'.tr())), // Localized message
                     );
                   }
                 },
@@ -131,11 +132,11 @@ class _ResetPasswordState extends State<ResetPassword> {
                 listener: (context, state) {
                   if (state is ResetPasswordSuccess) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Password reset successful. Please log in again.')),
+                      SnackBar(content: Text('password_reset_success'.tr())), // Localized success message
                     );
                   } else if (state is ResetPasswordError) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(state.message ?? 'An error occurred')),
+                      SnackBar(content: Text(state.message ?? 'password_reset_error'.tr())), // Localized error message
                     );
                   }
                 },

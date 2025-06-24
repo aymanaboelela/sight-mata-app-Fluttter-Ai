@@ -9,10 +9,12 @@ import 'package:sight_mate_app/presentation/screens/map.dart';
 import 'package:sight_mate_app/presentation/widgets/CustomTextFormField.dart';
 import 'package:sight_mate_app/presentation/widgets/Switched_ON.dart';
 import 'package:sight_mate_app/presentation/widgets/saveButton.dart';
+import 'package:easy_localization/easy_localization.dart'; // Import easy_localization
 
 class DistanceOffView extends StatefulWidget {
   const DistanceOffView({super.key, required this.onTap});
   final Function() onTap;
+
   @override
   State<DistanceOffView> createState() => _DistanceOffViewState();
 }
@@ -24,7 +26,6 @@ class _DistanceOffViewState extends State<DistanceOffView> {
   double? distance;
 
   @override
-  // ignore: override_on_non_overriding_member
   final formKey = GlobalKey<FormState>();
 
   Widget build(BuildContext context) {
@@ -52,8 +53,8 @@ class _DistanceOffViewState extends State<DistanceOffView> {
                     children: [
                       Customtextformfield(
                         controller: nameController,
-                        label: "User's Name",
-                        hintText: 'Enter name',
+                        label: "User's Name".tr(), // Translated text
+                        hintText: 'Enter name'.tr(), // Translated text
                         prefixIcon: Icons.person_3_outlined,
                       ),
                       const SizedBox(
@@ -61,8 +62,8 @@ class _DistanceOffViewState extends State<DistanceOffView> {
                       ),
                       Customtextformfield(
                         controller: emailController,
-                        label: "Email",
-                        hintText: "Enter User's Email",
+                        label: "Email".tr(), // Translated text
+                        hintText: "Enter User's Email".tr(), // Translated text
                         prefixIcon: Icons.email_outlined,
                       ),
                       const SizedBox(
@@ -71,14 +72,14 @@ class _DistanceOffViewState extends State<DistanceOffView> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            "Set Distance Alert",
-                            style: TextStyle(
+                          Text(
+                            "Set Distance Alert".tr(), // Translated text
+                            style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.primaryBlueColor),
                           ),
-                          Spacer(),
+                          const Spacer(),
                           GestureDetector(
                             onTap: () {
                               setState(() {
@@ -122,7 +123,7 @@ class _DistanceOffViewState extends State<DistanceOffView> {
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 5.0),
                                       child: Text(
-                                        isSwitched ? "on" : "off",
+                                        isSwitched ? "on".tr() : "off".tr(), // Translated text
                                         style: TextStyle(
                                           color: isSwitched
                                               ? Colors.black
@@ -154,7 +155,7 @@ class _DistanceOffViewState extends State<DistanceOffView> {
                                 distance = p0;
                               },
                             )
-                          : const SizedBox(), // if isSwitched is true, show SwitchedOn (there are inside it a slider and set distance from map) widget
+                          : const SizedBox(),
 
                       const SizedBox(
                         height: 90,

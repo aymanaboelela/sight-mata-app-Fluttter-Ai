@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import 'package:sight_mate_app/presentation/screens/map.dart';
 
 class SetDistanceContainer extends StatelessWidget {
@@ -24,9 +24,9 @@ class SetDistanceContainer extends StatelessWidget {
             boxShadow: const [
               BoxShadow(color: Colors.grey, offset: Offset(0, 3), blurRadius: 3)
             ]),
-        child: const Text(
-          "Set the distance from map",
-          style: TextStyle(
+        child: Text(
+          "set_distance".tr(),  // استخدام `tr()` لترجمة النص
+          style: const TextStyle(
               color: Colors.black, fontWeight: FontWeight.bold, fontSize: 17),
         ),
       ),

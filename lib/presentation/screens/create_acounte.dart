@@ -10,6 +10,7 @@ import 'package:sight_mate_app/core/utils/router/app_router.dart';
 import 'package:sight_mate_app/presentation/widgets/CustomButton.dart';
 import 'package:sight_mate_app/presentation/widgets/CustomTextFormField.dart';
 import 'package:sight_mate_app/presentation/widgets/UserType.dart';
+import 'package:easy_localization/easy_localization.dart'; // Import easy_localization
 
 class SignupView extends StatefulWidget {
   const SignupView({super.key});
@@ -37,9 +38,8 @@ class _SignupScreenState extends State<SignupView> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: const Text("Email Verification"),
-                content: const Text(
-                    "A verification email has been sent to your email address. Please check your inbox and verify your email before logging in."),
+                title: Text("email_verification".tr()), // Translated title
+                content: Text("verification_email_sent".tr()), // Translated content
                 actions: [
                   TextButton(
                     onPressed: () {
@@ -47,7 +47,7 @@ class _SignupScreenState extends State<SignupView> {
                       GoRouter.of(context).pushReplacement(
                           AppRouter.kLoginView); // Navigate to the login page
                     },
-                    child: const Text("OK"),
+                    child: Text("ok".tr()), // Translated button text
                   ),
                 ],
               );
@@ -72,21 +72,19 @@ class _SignupScreenState extends State<SignupView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Center(
-                        child: Text("Sign Up",
-                            style: TextStyle(
-                                fontSize: 24,
-                                fontFamily: 'Bahnschrift',
-                                color: Color(0xff46325D),
-                                fontWeight: FontWeight.bold)),
-                      ),
+                      Text("sign_up".tr(), // Translated text
+                          style: const TextStyle(
+                              fontSize: 24,
+                              fontFamily: 'Bahnschrift',
+                              color: Color(0xff46325D),
+                              fontWeight: FontWeight.bold)),
                       const SizedBox(
                         height: 30,
                       ),
                       Customtextformfield(
                         controller: nameController,
-                        label: "Name",
-                        hintText: "Enter your name",
+                        label: "name".tr(), // Translated label
+                        hintText: "enter_your_name".tr(), // Translated hint text
                         prefixIcon: Icons.person_2_outlined,
                       ),
                       const SizedBox(
@@ -95,8 +93,8 @@ class _SignupScreenState extends State<SignupView> {
                       Customtextformfield(
                         keyboardType: TextInputType.number,
                         controller: phoneController,
-                        label: "Phone Number",
-                        hintText: "Enter your phone",
+                        label: "phone_number".tr(), // Translated label
+                        hintText: "enter_your_phone".tr(), // Translated hint text
                         prefixIcon: Icons.lock_outlined,
                       ),
                       const SizedBox(
@@ -104,8 +102,8 @@ class _SignupScreenState extends State<SignupView> {
                       ),
                       Customtextformfield(
                         controller: emailController,
-                        label: "Email",
-                        hintText: "Enter your email",
+                        label: "email".tr(), // Translated label
+                        hintText: "enter_your_email".tr(), // Translated hint text
                         prefixIcon: Icons.email_outlined,
                       ),
                       const SizedBox(
@@ -114,15 +112,15 @@ class _SignupScreenState extends State<SignupView> {
                       Customtextformfield(
                         validator: (p0) {
                           if (p0!.isEmpty) {
-                            return "please enter your password";
+                            return "enter_password".tr(); // Translated error message
                           } else if (p0.length < 8) {
-                            return "Password must be at least 8 characters";
+                            return "password_min_length".tr(); // Translated error message
                           }
                           return null;
                         },
                         controller: passwordController,
-                        label: "Password",
-                        hintText: "Enter your password",
+                        label: "password".tr(), // Translated label
+                        hintText: "enter_your_password".tr(), // Translated hint text
                         prefixIcon: Icons.lock_outlined,
                         obscureText: !isPasswordVisible,
                         onSuffixIconTap: () {
@@ -137,15 +135,15 @@ class _SignupScreenState extends State<SignupView> {
                       Customtextformfield(
                         validator: (p0) {
                           if (p0 != passwordController?.text) {
-                            return "Password does not match";
+                            return "password_mismatch".tr(); // Translated error message
                           } else if (verifyPasswordController!.text.isEmpty) {
-                            return "please enter your verify password";
+                            return "enter_verify_password".tr(); // Translated error message
                           }
                           return null;
                         },
                         controller: verifyPasswordController,
-                        label: "Verify Password",
-                        hintText: "Enter your password",
+                        label: "verify_password".tr(), // Translated label
+                        hintText: "enter_your_password".tr(), // Translated hint text
                         prefixIcon: Icons.lock_outlined,
                         obscureText: !isPasswordVisible,
                         onSuffixIconTap: () {
@@ -160,14 +158,13 @@ class _SignupScreenState extends State<SignupView> {
                       Usertype(
                         isAdmin: (p0) {
                           isadmin = p0;
-                          print(isadmin);
                         },
                       ), //toggle button to determine user Type
                       const SizedBox(
                         height: 20,
                       ),
                       Custombottom(
-                          text: "Create Account",
+                          text: "create_account".tr(), // Translated text
                           onpressed: () {
                             if (formKey.currentState!.validate()) {
                               context.read<AuthCubit>().createAccount(
@@ -184,9 +181,9 @@ class _SignupScreenState extends State<SignupView> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text(
-                            "Alreadyhave an account ?",
-                            style: TextStyle(
+                          Text(
+                            "already_have_account".tr(), // Translated text
+                            style: const TextStyle(
                                 color: Colors.black,
                                 fontSize: 14,
                                 fontFamily: 'Bahnschrift'),
@@ -196,9 +193,9 @@ class _SignupScreenState extends State<SignupView> {
                               GoRouter.of(context)
                                   .pushReplacement(AppRouter.kLoginView);
                             },
-                            child: const Text(
-                              "login",
-                              style: TextStyle(
+                            child: Text(
+                              "login".tr(), // Translated text
+                              style: const TextStyle(
                                   color: Color(0xff46325D),
                                   fontSize: 14,
                                   fontFamily: 'Bahnschrift'),

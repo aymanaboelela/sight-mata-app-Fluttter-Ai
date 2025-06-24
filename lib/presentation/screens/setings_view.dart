@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sight_mate_app/core/utils/router/app_router.dart';
 import 'package:sight_mate_app/presentation/widgets/PopMenuListtile.dart';
+import 'package:easy_localization/easy_localization.dart'; // Import easy_localization
 
 import '../../controllers/auth/auth_cubit.dart';
 
@@ -17,22 +18,22 @@ class SettingsView extends StatelessWidget {
         children: [
           InkWell(
             onTap: () => GoRouter.of(context).push(AppRouter.kMyProfileView),
-            child: const Popmenulisttile(
-              title: "My Profile",
+            child: Popmenulisttile(
+              title: 'my_profile'.tr(), // Localized title
               icon: Icons.person,
             ),
           ),
           InkWell(
             onTap: () => GoRouter.of(context).push(AppRouter.kAboutView),
-            child: const Popmenulisttile(
-              title: "About",
+            child: Popmenulisttile(
+              title: 'about'.tr(), // Localized title
               icon: Icons.settings,
             ),
           ),
           InkWell(
             onTap: () => GoRouter.of(context).push(AppRouter.khelpView),
-            child: const Popmenulisttile(
-              title: "help",
+            child: Popmenulisttile(
+              title: 'help'.tr(), // Localized title
               icon: Icons.help,
             ),
           ),
@@ -41,8 +42,8 @@ class SettingsView extends StatelessWidget {
               GoRouter.of(context).pushReplacement(AppRouter.kLoginView);
               context.read<AuthCubit>().signOut();
             },
-            child: const Popmenulisttile(
-              title: "Logout",
+            child: Popmenulisttile(
+              title: 'logout'.tr(), // Localized title
               icon: Icons.logout,
             ),
           ),

@@ -6,6 +6,7 @@ import 'package:sight_mate_app/controllers/auth/auth_cubit.dart'; // Import Auth
 import 'package:sight_mate_app/core/constants/colors.dart'; // Import colors
 import 'package:sight_mate_app/presentation/screens/reset_pass.dart'; // Import ResetPassword screen
 import 'package:sight_mate_app/presentation/widgets/BlueButton.dart'; // Import BlueButton widget
+import 'package:easy_localization/easy_localization.dart'; // Import easy_localization
 
 // Forgot Password Screen
 class ForgotPassword extends StatefulWidget {
@@ -23,7 +24,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Forgot Password'),
+        title: Text('forgot_password'.tr()), // Translated title
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -35,19 +36,19 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               // Email field
               TextFormField(
                 controller: emailC,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(borderRadius: borderRadiusStd),
-                  hintText: 'Email',
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(borderRadius: borderRadiusStd),
+                  hintText: 'email'.tr(), // Translated hint text
                 ),
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: (value) => !EmailValidator.validate(value!)
-                    ? 'Invalid email format!' // Email validation
+                    ? 'invalid_email_format'.tr() // Translated validation error
                     : null,
               ),
               formSpacer,
               // Send token button
               BlueButton(
-                teks: 'Send Reset Password Token',
+                teks: 'send_reset_password_token'.tr(), // Translated button text
                 padding: 0,
                 onPressed: () async {
                   if (formKey.currentState!.validate()) {
@@ -55,8 +56,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       context: context,
                       builder: (context) => AlertDialog(
                         content: Container(
-                          child: const Text(
-                            'Please check your email and spam folder for the token if it\'s not in your inbox!',
+                          child: Text(
+                            'check_email'.tr(), // Translated dialog message
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -72,7 +73,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               formSpacer,
               // Button to navigate to ResetPassword page
               TextButton(
-                child: const Text('Already have a token? Reset your password'),
+                child: Text('already_have_token'.tr()), // Translated button text
                 onPressed: () async {
                   Navigator.push(
                     context,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:easy_localization/easy_localization.dart'; // Import easy_localization
 
 class StartJourney extends StatelessWidget {
   final Function() onTap;
@@ -8,6 +8,7 @@ class StartJourney extends StatelessWidget {
     super.key,
     required this.onTap,
   });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,9 +34,9 @@ class StartJourney extends StatelessWidget {
             const SizedBox(
               height: 15,
             ),
-            const Text(
-              "Start Your Journey",
-              style: TextStyle(
+            Text(
+              "start_your_journey".tr(), // Translated text
+              style: const TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 17,
                   color: Colors.black),
@@ -43,9 +44,9 @@ class StartJourney extends StatelessWidget {
             const SizedBox(
               height: 5,
             ),
-            const Text(
-              "Start by adding your first to keep you informed\n about the  location and alerts for thier safety.",
-              style: TextStyle(
+            Text(
+              "start_by_adding_first".tr(), // Translated text
+              style: const TextStyle(
                 color: Color(0xffADADAD),
               ),
             )

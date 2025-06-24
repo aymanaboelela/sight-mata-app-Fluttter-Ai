@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart'; // إضافة الاستيراد لترجمة النصوص
 
 class Usertype extends StatefulWidget {
   const Usertype({super.key, required this.isAdmin});
   final Function(bool) isAdmin;
+
   @override
   State<Usertype> createState() => _UsertypeState();
 }
@@ -12,20 +14,20 @@ class _UsertypeState extends State<Usertype> {
 
   @override
   Widget build(BuildContext context) {
-    return  ToggleButtons(
-      children:  [
-       const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.0),
+    return ToggleButtons(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Text(
-            'Visually Impaired',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            'visually_impaired'.tr(), // استخدام `tr()` لترجمة النص
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 50.0),
+          padding: const EdgeInsets.symmetric(horizontal: 50.0),
           child: Text(
-            'Fellow',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            'fellow'.tr(), // استخدام `tr()` لترجمة النص
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
       ],
@@ -42,7 +44,7 @@ class _UsertypeState extends State<Usertype> {
       borderRadius: BorderRadius.circular(30),
       selectedColor: Colors.white, // selected Text color
       fillColor: const Color.fromARGB(255, 120, 98, 146),
-      color: Colors.black, //  unselected Text color
+      color: Colors.black, // unselected Text color
     );
   }
 }

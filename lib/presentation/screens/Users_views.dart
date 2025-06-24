@@ -5,6 +5,7 @@ import 'package:sight_mate_app/controllers/add_data_cubit/data_cubit.dart';
 import 'package:sight_mate_app/models/data_mode.dart';
 import 'package:sight_mate_app/presentation/widgets/AddAnotherUser.dart';
 import 'package:sight_mate_app/presentation/widgets/UserListtile.dart';
+import 'package:easy_localization/easy_localization.dart'; // Import easy_localization
 
 class UsersViews extends StatefulWidget {
   const UsersViews({super.key, required this.onTap, this.data});
@@ -35,7 +36,7 @@ class _UsersViewsState extends State<UsersViews> {
               .showSnackBar(SnackBar(content: Text(state.message)));
         } else if (state is DeleteDataSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('User deleted successfully')),
+            SnackBar(content: Text('User deleted successfully'.tr())),
           );
         } else if (state is DeleteDataError) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -72,7 +73,7 @@ class _UsersViewsState extends State<UsersViews> {
                               },
                               backgroundColor: Colors.red,
                               icon: Icons.delete,
-                              label: 'Delete',
+                              label: 'Delete'.tr(), // Translated text
                             ),
                           ],
                         ),
@@ -88,7 +89,7 @@ class _UsersViewsState extends State<UsersViews> {
                       onTap: () {
                         widget.onTap();
                       },
-                      child: const Addanotheruser()),
+                      child: Addanotheruser()),
                   const SizedBox(height: 100),
                 ],
               ),

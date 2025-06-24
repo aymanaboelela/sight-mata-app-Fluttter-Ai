@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
@@ -28,11 +29,13 @@ class _MyprofileViewState extends State<MyprofileView> {
     return BlocConsumer<EditprofileCubit, EditprofileState>(
       listener: (context, state) {
         if (state is EditprofileSuccess) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text("Profile Updated")));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("profile_updated".tr())),
+          );
         } else if (state is EditprofileError) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(state.message)));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
         }
       },
       builder: (context, state) {
@@ -52,9 +55,9 @@ class _MyprofileViewState extends State<MyprofileView> {
                   color: Colors.white,
                 ),
               ),
-              title: const Text(
-                "My Profile",
-                style: TextStyle(
+              title: Text(
+                "my_profile".tr(),
+                style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                     fontSize: 18),
@@ -68,7 +71,7 @@ class _MyprofileViewState extends State<MyprofileView> {
                       setState(() {});
                     },
                     controller: nameController,
-                    label: "Name",
+                    label: "name".tr(),
                     hintText: CacheData.getData(key: userNameUser),
                   ),
                   MyPfrofileTextFormField(
@@ -76,7 +79,7 @@ class _MyprofileViewState extends State<MyprofileView> {
                       setState(() {});
                     },
                     controller: phoneController,
-                    label: "Phone Number",
+                    label: "phone".tr(),
                     hintText: CacheData.getData(key: phoneCahnged),
                   ),
                   MyPfrofileTextFormField(
@@ -84,29 +87,22 @@ class _MyprofileViewState extends State<MyprofileView> {
                       setState(() {});
                     },
                     controller: emailController,
-                    label: "Email",
+                    label: "email".tr(),
                     hintText: CacheData.getData(key: emailChanged),
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  const SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.only(left: 250),
                     child: GestureDetector(
                       onTap: () {
-                        // تم تمرير BlocProvider للقيم بشكل صحيح
                         showModalBottomSheet(
                           context: context,
-                          // isScrollControlled:
-                          //     true, // Makes it possible to control height
                           backgroundColor: Colors.transparent,
                           builder: (BuildContext context) {
                             return Align(
-                              alignment:
-                                  Alignment.center, // Moves it to the center
+                              alignment: Alignment.center,
                               child: Container(
                                 width: double.infinity,
-                                // height: 475,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(16),
@@ -117,18 +113,16 @@ class _MyprofileViewState extends State<MyprofileView> {
                           },
                         );
                       },
-                      child: const Text(
-                        "Change Password",
-                        style: TextStyle(
+                      child: Text(
+                        "change_password".tr(),
+                        style: const TextStyle(
                             color: Colors.black,
                             fontSize: 12,
                             fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 50,
-                  ),
+                  const SizedBox(height: 50),
                   nameController!.text.isEmpty &&
                           phoneController!.text.isEmpty &&
                           emailController!.text.isEmpty

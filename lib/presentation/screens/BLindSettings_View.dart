@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -32,15 +33,16 @@ class _BlindsettingsViewState extends State<BlindsettingsView> {
   bool isSwitchedObjectRecognition = false;
   bool isSwitchedtextReading = false;
   bool isSwitchedactivateTracking = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.primaryBlueColor,
         centerTitle: true,
-        title: const Text(
-          "Settings",
-          style: TextStyle(
+        title: Text(
+          "settings".tr(),
+          style: const TextStyle(
               fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
         ),
       ),
@@ -50,66 +52,76 @@ class _BlindsettingsViewState extends State<BlindsettingsView> {
           child: Column(
             children: [
               BlindsettingsContainer(
-                title: "My Profile",
+                title: "my_profile".tr(),
                 image: "assets/images/Group (1).png",
                 ontap: () {
                   GoRouter.of(context).push(AppRouter.kMyProfileView);
                 },
               ),
               BlindsettingsContainer(
-                title: "General",
-                image: "assets/images/iconoir_ios-settings.png",
-                ontap: () {
-                  GoRouter.of(context).push(AppRouter.KGeneralSettings);
-                },
-              ),
-              BlindsettingsContainer(
-                title: "About",
+                title: "about".tr(),
                 image: "assets/images/ix_about.png",
                 ontap: () {
                   GoRouter.of(context).push(AppRouter.kAboutView);
                 },
               ),
               Blindsettingslisttile(
-                isSwitched: isSwitchedObjectRecognition,
-                image: "assets/images/game-icons_3d-stairs.png",
-                title: "Object Recognition",
-                subtitle: 'The app will analyze the object around you',
-                ontap: (b1) {
-                  CacheData.setData(
-                      key: AppCacheData.objectRecognition, value: b1);
-                },
-              ),
-              Blindsettingslisttile(
-                isSwitched: isSwitchedtextReading,
-                image: "assets/images/Group (2).png",
-                title: "Text Reading",
-                subtitle: 'The app will read the text on signs or papers',
-                ontap: (b2) {
-                  CacheData.setData(key: AppCacheData.textReading, value: b2);
-                },
-              ),
-              Blindsettingslisttile(
                 isSwitched: isSwitchedactivateTracking,
                 image: "assets/images/gis_poi-map.png",
-                title: "Activate Tracking",
-                subtitle: "the follower can know your location",
+                title: "activate_tracking".tr(),
+                subtitle: "tracking_description".tr(),
                 ontap: (b3) {
                   CacheData.setData(
                       key: AppCacheData.activateTracking, value: b3);
                 },
               ),
-              const VoiceIntergrationListtile(),
-              SizedBox(height: 20),
               BlindsettingsContainer(
-                title: "Logout",
+                title: "about".tr(),
+                image: "assets/images/ix_about.png",
+                ontap: () {
+                  GoRouter.of(context).push(AppRouter.kAboutView);
+                },
+              ),
+              BlindsettingsContainer(
+                title: "language".tr(),
+                image: "assets/images/language.png",
+                ontap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text("select_language".tr()),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ListTile(
+                            title: Text("english".tr()),
+                            onTap: () {
+                              context.setLocale(const Locale('en'));
+                              Navigator.pop(context);
+                            },
+                          ),
+                          ListTile(
+                            title: Text("arabic".tr()),
+                            onTap: () {
+                              context.setLocale(const Locale('ar'));
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+              BlindsettingsContainer(
+                title: "logout".tr(),
                 image: "assets/images/ix_about.png",
                 ontap: () {
                   GoRouter.of(context).pushReplacement(AppRouter.kLoginView);
                   context.read<AuthCubit>().signOut();
                 },
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
             ],
           ),
         ),

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:sight_mate_app/core/constants/colors.dart';
 
@@ -22,8 +23,8 @@ class Savebutton extends StatelessWidget {
               BoxShadow(
                   color: Colors.grey, offset: Offset(5.0, 5.0), blurRadius: 10)
             ]),
-        child: const Text(
-          "Save",
+        child: Text(
+          "save".tr(), // استخدام `tr()` لترجمة النص
           style: TextStyle(
               color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
         ),
@@ -51,7 +52,7 @@ class SavebuttonOf extends StatelessWidget {
                 color: Colors.grey, offset: Offset(5.0, 5.0), blurRadius: 10)
           ]),
       child: Text(
-        "Save",
+        "save".tr(), // استخدام `tr()` لترجمة النص
         style: TextStyle(
             color: Colors.white.withOpacity(0.7),
             fontSize: 15,

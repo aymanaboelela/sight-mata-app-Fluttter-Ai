@@ -6,6 +6,7 @@ import 'package:sight_mate_app/controllers/editprofile/editprofile_cubit.dart';
 import 'package:sight_mate_app/core/constants/app_assets.dart';
 import 'package:sight_mate_app/presentation/widgets/MyProfileTextFormField.dart';
 import 'package:sight_mate_app/presentation/widgets/saveButton.dart';
+import 'package:easy_localization/easy_localization.dart'; // Import easy_localization
 
 class ChangepasswordView extends StatefulWidget {
   const ChangepasswordView({super.key});
@@ -27,7 +28,7 @@ class _ChangepasswordViewState extends State<ChangepasswordView> {
         listener: (context, state) {
           if (state is EditprofileSuccess) {
             ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text("Password Updated")));
+                .showSnackBar(SnackBar(content: Text("Password Updated".tr())));
           } else if (state is EditprofileError) {
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text(state.message)));
@@ -44,9 +45,9 @@ class _ChangepasswordViewState extends State<ChangepasswordView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "Change Password",
-                        style: TextStyle(
+                      Text(
+                        "Change Password".tr(), // Translated text
+                        style: const TextStyle(
                             color: Colors.black,
                             fontSize: 25,
                             fontWeight: FontWeight.bold),
@@ -56,11 +57,11 @@ class _ChangepasswordViewState extends State<ChangepasswordView> {
                       ),
                       MyPfrofileTextFormField(
                         controller: oldPasswordcontroller,
-                        label: "Old Password",
-                        hintText: "Enter Old Password",
+                        label: "Old Password".tr(), // Translated text
+                        hintText: "Enter Old Password".tr(), // Translated text
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your old password';
+                            return 'Please enter your old password'.tr(); // Translated text
                           }
                           return null;
                         },
@@ -69,12 +70,12 @@ class _ChangepasswordViewState extends State<ChangepasswordView> {
                         controller: newPasswordcontroller,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your old password';
+                            return 'Please enter your new password'.tr(); // Translated text
                           }
                           return null;
                         },
-                        label: "New Password",
-                        hintText: 'Enter New Password',
+                        label: "New Password".tr(), // Translated text
+                        hintText: 'Enter New Password'.tr(), // Translated text
                       ),
                       const SizedBox(
                         height: 35,

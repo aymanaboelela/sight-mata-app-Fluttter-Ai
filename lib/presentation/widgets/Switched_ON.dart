@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sight_mate_app/core/constants/colors.dart';
 import 'package:sight_mate_app/presentation/widgets/SetDistanceContainer.dart';
+import 'package:easy_localization/easy_localization.dart'; // إضافة الاستيراد لترجمة النصوص
 
 class SwitchedOn extends StatefulWidget {
   const SwitchedOn({super.key, required this.onChanged, this.currentValue});
@@ -48,14 +49,14 @@ class _SwitchedOnState extends State<SwitchedOn> {
           padding: EdgeInsets.symmetric(horizontal: 25),
           child: Row(
             children: [
-              const Text(
-                "0 km",
+              Text(
+                "distance".tr(), // استخدام `tr()` لترجمة النص
                 style: TextStyle(
                     color: AppColors.primaryBlueColor,
                     fontWeight: FontWeight.bold),
               ),
               const Spacer(),
-              Text("$_currentValue km",
+              Text("$_currentValue ${"km".tr()}", // ترجمة الكلمة "km"
                   style: const TextStyle(
                       color: AppColors.primaryBlueColor,
                       fontWeight: FontWeight.bold))
@@ -65,7 +66,7 @@ class _SwitchedOnState extends State<SwitchedOn> {
         const SizedBox(
           height: 20,
         ),
-        const Row(
+         Row(
           children: [
             Expanded(
               child: Divider(
@@ -77,7 +78,7 @@ class _SwitchedOnState extends State<SwitchedOn> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 8.0),
               child: Text(
-                "OR",
+                "or".tr(), 
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
@@ -94,7 +95,7 @@ class _SwitchedOnState extends State<SwitchedOn> {
         const SizedBox(
           height: 50,
         ),
-        const SetDistanceContainer(), // adding the distance form Maps
+        const SetDistanceContainer(), // إضافة المسافة من الخريطة
       ],
     );
   }

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_floating_search_bar_2/material_floating_search_bar_2.dart';
+import 'package:easy_localization/easy_localization.dart'; // Import for localization
 
 import '../../controllers/cubit/map_cubit.dart';
 import 'loading_indicator.dart';
@@ -19,7 +20,7 @@ class FloatingSearchBarWidget extends StatelessWidget {
     return SafeArea(
       child: SizedBox(
         child: FloatingSearchBar(
-          hint: 'Search location...',
+          hint: 'search_hint'.tr(), // Using localized hint text
           onQueryChanged: (query) {
             if (query.isNotEmpty) {
               cubit.searchLocation(query);
@@ -34,10 +35,10 @@ class FloatingSearchBarWidget extends StatelessWidget {
                 children: [
                   if (state.isSearching) const MyLinearLoadingIndicator(),
                   if (state.searchResults.isEmpty && !state.isSearching)
-                    const Center(
+                    Center(
                       child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Text('No results found'),
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text('no_results_found'.tr()), // Using localized text for no results
                       ),
                     ),
                   if (state.searchResults.isNotEmpty)

@@ -35,7 +35,6 @@ class DataModel {
   // تحويل الكائن إلى JSON لإرساله إلى Supabase
   Map<String, dynamic> toJson() {
     return {
-      "id": id,
       'userid': userid,
       'username': username,
       'email': email,
