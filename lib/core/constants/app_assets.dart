@@ -4,6 +4,7 @@ abstract class AppAssets {
   static const mic = 'assets/images/mic.svg';
   static const volume = 'assets/images/Volume 2.svg';
   static const logo2 = 'assets/images/logo2.png';
+  static const bb = 'assets/images/BB.png';
 
 //lson
   static const test = 'assets/josn/test.json';

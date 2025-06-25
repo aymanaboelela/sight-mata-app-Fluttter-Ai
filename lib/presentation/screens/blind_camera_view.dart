@@ -33,12 +33,17 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
   static const int _inputSize = 300;
   static const double _confidenceThreshold = 0.5;
   static const int _streamDelay = 1500;
+  
 
   @override
   void initState() {
     super.initState();
     _initializeSystem();
+    // Show the permission dialog after the widget is built
+
   }
+
+
 
   Future<void> _initializeSystem() async {
     try {
@@ -65,8 +70,7 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
 
   Future<void> _loadLabels() async {
     try {
-      final labelData =
-          await rootBundle.loadString('assets/model/label2.txt');
+      final labelData = await rootBundle.loadString('assets/model/label2.txt');
       _labels = labelData
           .split('\n')
           .map((label) => label.trim())
@@ -213,7 +217,8 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
         }
       }
 
-      _interpreter!.runForMultipleInputs(inputTensor, outputs.cast<int, Object>());
+      _interpreter!
+          .runForMultipleInputs(inputTensor, outputs.cast<int, Object>());
 
       // Adjust based on actual tensor output structure
       return {
@@ -270,7 +275,7 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
         });
 
         if (detectedObjects.isNotEmpty) {
-          _flutterTts.speak("I detect ${detectedObjects[0]}");
+          _flutterTts.speak("${detectedObjects[0]}");
         }
       }
 
@@ -320,70 +325,72 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
           Positioned(
             left: 0,
             right: 0,
-            bottom: 50,
-            child: Container(
-              padding: EdgeInsets.all(16),
-              color: Colors.black54,
-              child: Column(
-                children: [
-                  Text(_outputText,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 18, color: Colors.white)),
-                  Text(_processingTime,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white70)),
-                  SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _buildActionButton(
-                        label: _isStreaming ? "Stop" : "Stream",
-                        onPressed:
-                            _isStreaming ? _stopStreaming : _startStreaming,
-                        isActive: _isStreaming,
-                        isEnabled: _isCameraReady && _interpreter != null,
-                      ),
-                      SizedBox(width: 20),
-                      _buildActionButton(
-                        label: "Capture",
-                        onPressed: _isProcessing ? null : _processImage,
-                        isActive: _isProcessing,
-                        isEnabled: _isCameraReady && _interpreter != null,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+            bottom: 40,
+            child: Image.asset(
+              AppAssets.bb,
+              width: 100,
+              height: 100,
             ),
+            // child: Container(
+            //   padding: EdgeInsets.all(16),
+            //   color: Colors.black54,
+            //   child: Column(
+            //     children: [
+            //       Text(_outputText,
+            //           textAlign: TextAlign.center,
+            //           style: TextStyle(fontSize: 18, color: Colors.white)),
+            //       Text(_processingTime,
+            //           textAlign: TextAlign.center,
+            //           style: TextStyle(color: Colors.white70)),
+            //       SizedBox(height: 16),
+            //       Row(
+            //         mainAxisAlignment: MainAxisAlignment.center,
+            //         children: [
+            //           ElevatedButton(
+            //             onPressed:
+            //                 _isStreaming ? _stopStreaming : _startStreaming,
+            //             style: ElevatedButton.styleFrom(
+            //               backgroundColor: _isStreaming
+            //                   ? Colors.red
+            //                   : AppColors.primaryBlueColor,
+            //               padding: EdgeInsets.symmetric(
+            //                   horizontal: 24, vertical: 12),
+            //             ),
+            //             child: Text(
+            //               _isStreaming ? "Stop" : "Stream",
+            //               style: TextStyle(
+            //                 color: Colors.white,
+            //                 fontSize: 16,
+            //                 fontWeight: FontWeight.w500,
+            //               ),
+            //             ),
+            //           ),
+            //           SizedBox(width: 20),
+            //           ElevatedButton(
+            //             onPressed: _isProcessing ? null : _processImage,
+            //             style: ElevatedButton.styleFrom(
+            //               backgroundColor: _isProcessing
+            //                   ? Colors.red
+            //                   : AppColors.primaryBlueColor,
+            //               padding: EdgeInsets.symmetric(
+            //                   horizontal: 24, vertical: 12),
+            //             ),
+            //             child: Text(
+            //               "Capture",
+            //               style: TextStyle(
+            //                 color: Colors.white,
+            //                 fontSize: 16,
+            //                 fontWeight: FontWeight.w500,
+            //               ),
+            //             ),
+            //           ),
+            //         ],
+            //       ),
+            //     ],
+            //   ),
+            // ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildActionButton({
-    required String label,
-    required VoidCallback? onPressed,
-    bool isActive = false,
-    bool isEnabled = true,
-  }) {
-    return ElevatedButton(
-      onPressed: isEnabled ? onPressed : null,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: isActive
-            ? Colors.red
-            : isEnabled
-                ? AppColors.primaryBlueColor
-                : Colors.grey,
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-        ),
       ),
     );
   }

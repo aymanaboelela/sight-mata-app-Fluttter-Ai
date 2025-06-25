@@ -1,9 +1,11 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:sight_mate_app/core/constants/colors.dart';
 import 'package:sight_mate_app/presentation/screens/BLindSettings_View.dart';
 import 'package:sight_mate_app/presentation/screens/blind_camera_view.dart';
 import 'package:sight_mate_app/presentation/screens/blind_map_view.dart';
+
 class HomeBlindView extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -11,14 +13,58 @@ class HomeBlindView extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeBlindView> {
   int _page = 0;
-
+  bool _dialogShown = false;
   // List of screens to switch between
   final List<Widget> _screens = [
     VoiceAICommunicationPage(),
-  BlindMapView(),
+    BlindMapView(),
     BlindsettingsView(),
-
   ];
+
+  void _showPermissionDialog() {
+    if (_dialogShown) return;
+
+    setState(() {
+      _dialogShown = true;
+    });
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: const Text('Permission Request'),
+        content: const Text('Would you like to allow the app to monitor you?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Permission denied')),
+              );
+            },
+            child: const Text('No'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Permission granted')),
+              );
+            },
+            child: const Text('Yes'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _showPermissionDialog();
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

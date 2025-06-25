@@ -42,6 +42,7 @@ dependencies:
   flutter_bloc: ^9.1.0
   flutter_langdetect: ^0.0.2
   flutter_launcher_icons: ^0.14.4
+  flutter_local_notifications: ^19.3.0
   flutter_map: ^5.0.0
   flutter_screenutil: ^5.9.3
   flutter_slidable: ^4.0.0
@@ -69,8 +70,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  
-
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
@@ -87,7 +86,7 @@ flutter_launcher_icons:
     icon_size: 48 # min:48, max:256, default: 48
   macos:
     generate: true
-    image_path: "assets/images/applogo.jpg"    
+    image_path: "assets/images/applogo.jpg"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

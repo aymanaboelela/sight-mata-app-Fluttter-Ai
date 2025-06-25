@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:sight_mate_app/core/constants/app_assets.dart';
 
 import '../../controllers/cubit/map_cubit.dart';
 import '../widgets/floating_action_buttons.dart';
@@ -62,6 +63,16 @@ class _BlindMapViewState extends State<BlindMapView> {
                       ),
                     ],
                   ),
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 40,
+              child: Image.asset(
+                AppAssets.bb,
+                width: 100,
+                height: 100,
+              ),
+            ),
           ]),
           floatingActionButton: state.currentLocation != null
               ? FloatingActionButtonWidgets(
