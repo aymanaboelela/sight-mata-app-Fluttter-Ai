@@ -42,7 +42,7 @@ dependencies:
   flutter_bloc: ^9.1.0
   flutter_langdetect: ^0.0.2
   flutter_launcher_icons: ^0.14.4
-  flutter_local_notifications: ^19.3.0
+ 
   flutter_map: ^5.0.0
   flutter_screenutil: ^5.9.3
   flutter_slidable: ^4.0.0
