@@ -8,7 +8,11 @@ class DataInitial extends DataState {}
 class AddDataLoading extends DataState {}
 
 class AddDataSuccess extends DataState {}
+class UserTokenFound extends DataState {
+  final UserTokenModel userToken;
 
+  UserTokenFound({required this.userToken});
+}
 class AddDataError extends DataState {
   final String message;
   AddDataError({required this.message});

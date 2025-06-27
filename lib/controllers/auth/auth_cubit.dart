@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:meta/meta.dart';
 import 'package:sight_mate_app/core/constants/cach_data_const.dart';
 import 'package:sight_mate_app/core/constants/constans.dart';
@@ -75,6 +76,13 @@ class AuthCubit extends Cubit<AuthState> {
       } else {
         emit(LoginError(message: "Login failed. Please try again."));
       }
+
+      final userType = response.user?.userMetadata?["is_admin"];
+      saveUserTokenToSupabase(
+        email: email,
+        userType: userType,
+      );
+
       CacheData.setData(
           key: userNameUser, value: response.user?.userMetadata?['username']);
       CacheData.setData(
@@ -136,7 +144,6 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       // Verify the OTP (token) to confirm the reset process
       final recovery = await supabase.auth.verifyOTP(
-        
         email: email,
         token: resetToken,
         type: OtpType.recovery, // Type: recovery
@@ -154,6 +161,34 @@ class AuthCubit extends Cubit<AuthState> {
       emit(ResetPasswordError(message: e.message));
     } catch (e) {
       emit(ResetPasswordError(message: e.toString()));
+    }
+  }
+
+  Future<void> saveUserTokenToSupabase({
+    required String email,
+    required bool userType, // blind or follower
+  }) async {
+    try {
+      // احصل على التوكن الجديد
+      final fcmToken = CacheData.getData(key: AppCacheData.deviceToken);
+
+      if (fcmToken == null) {
+        log('⚠️ FCM token is null');
+        return;
+      }
+
+      final supabase = Supabase.instance.client;
+
+      // استخدم upsert + onConflict لتحديث التوكن لو الإيميل موجود
+      final response = await supabase.from('user_tokens').upsert({
+        'id': email,
+        'fcm_token': fcmToken,
+        'user_type': userType,
+      }, onConflict: 'id');
+
+      log('✅ Token saved or updated successfully');
+    } catch (e) {
+      log('❌ Error saving token: $e');
     }
   }
 }

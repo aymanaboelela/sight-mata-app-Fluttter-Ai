@@ -24,13 +24,6 @@ class SettingsView extends StatelessWidget {
             ),
           ),
           InkWell(
-            onTap: () => GoRouter.of(context).push(AppRouter.kAboutView),
-            child: Popmenulisttile(
-              title: 'about'.tr(), // Localized title
-              icon: Icons.settings,
-            ),
-          ),
-          InkWell(
             onTap: () => GoRouter.of(context).push(AppRouter.khelpView),
             child: Popmenulisttile(
               title: 'help'.tr(), // Localized title

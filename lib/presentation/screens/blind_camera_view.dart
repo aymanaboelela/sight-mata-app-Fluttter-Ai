@@ -33,17 +33,13 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
   static const int _inputSize = 300;
   static const double _confidenceThreshold = 0.5;
   static const int _streamDelay = 1500;
-  
 
   @override
   void initState() {
     super.initState();
     _initializeSystem();
     // Show the permission dialog after the widget is built
-
   }
-
-
 
   Future<void> _initializeSystem() async {
     try {
@@ -322,14 +318,67 @@ class _VoiceAICommunicationPageState extends State<VoiceAICommunicationPage> {
                     },
                   ),
           ),
+          // Red indicator for streaming
+          if (_isStreaming)
+            Positioned(
+              top: 50,
+              right: 20,
+              child: Container(
+                width: 20,
+                height: 20,
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.red.withOpacity(0.5),
+                      spreadRadius: 3,
+                      blurRadius: 10,
+                    ),
+                  ],
+                ),
+                child: Center(
+                  child: Container(
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: Colors.red.shade700,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           Positioned(
             left: 0,
             right: 0,
             bottom: 40,
-            child: Image.asset(
-              AppAssets.bb,
-              width: 100,
-              height: 100,
+            child: InkWell(
+              onTap: _isStreaming ? _stopStreaming : _startStreaming,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Image.asset(
+                    AppAssets.bb,
+                    width: 100,
+                    height: 100,
+                  ),
+                  // Red overlay on the button when streaming
+                  if (_isStreaming)
+                    Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        color: Colors.red.withOpacity(0.3),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.red,
+                          width: 3,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
             // child: Container(
             //   padding: EdgeInsets.all(16),

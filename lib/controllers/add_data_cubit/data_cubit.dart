@@ -3,9 +3,9 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:meta/meta.dart';
-import 'package:sight_mate_app/core/constants/constans.dart';
-import 'package:sight_mate_app/core/helper/cach_data.dart';
+
 import 'package:sight_mate_app/models/data_mode.dart';
+import 'package:sight_mate_app/models/user_token_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 part 'data_state.dart';
@@ -33,7 +33,6 @@ class DataCubit extends Cubit<DataState> {
         return;
       }
 
-      // إنشاء كائن من الموديل وتحويله إلى JSON
       DataModel userData = DataModel(
         userid: user.id,
         username: name,
@@ -67,9 +66,9 @@ class DataCubit extends Cubit<DataState> {
 
       if (response.isEmpty) {
         emit(GetDataEmpty());
-        return []; // إرجاع null بدلاً من قيمة غير معروفة
+        return []; 
       } else {
-        // تحويل البيانات من JSON إلى `DataModel`
+       
         List<DataModel> dataList =
             response.map((json) => DataModel.fromJson(json)).toList();
 
@@ -77,7 +76,7 @@ class DataCubit extends Cubit<DataState> {
 
         emit(GetDataSuccess(data: dataList));
 
-        return dataList; // إرجاع أول عنصر في القائمة
+        return dataList; 
       }
     } catch (e) {
       log("Error retrieving data: ${e.toString()}");
@@ -98,7 +97,7 @@ class DataCubit extends Cubit<DataState> {
     emit(UpdateDataLoading());
 
     try {
-      // تأكد من تحديث الجلسة بشكل صحيح
+
       final sessionResponse = await supabase.auth.refreshSession();
       log("Session refreshed: ${sessionResponse.toString()}");
 
@@ -118,7 +117,7 @@ class DataCubit extends Cubit<DataState> {
         lat: lat,
         lon: lon,
       );
-      // تحديث البيانات في قاعدة البيانات
+     
       final response = await supabase
           .from('addusersdata')
           .update(userData.toJson())
@@ -133,43 +132,43 @@ class DataCubit extends Cubit<DataState> {
     }
   }
 
-// إضافة ميثود جديدة لاسترجاع بيانات جميع المستخدمين الذين يحتوي بياناتهم على lat و lon
+
   Future<List<LatLng>> getAllUsersWithLatLon() async {
     emit(GetDataLoading());
 
     try {
-      // تحديث الجلسة للتأكد من أن المستخدم قد تم المصادقة عليه
+     
       await supabase.auth.refreshSession();
 
-      // جلب البيانات من Supabase
+     
       final response = await supabase
           .from('addusersdata')
           .select()
-          .not('lat', 'is', null) // التأكد من أن lat ليس فارغًا
-          .not('lon', 'is', null); // التأكد من أن lon ليس فارغًا
+          .not('lat', 'is', null)
+          .not('lon', 'is', null); 
 
       if (response.isEmpty) {
         emit(GetDataEmpty());
         return [];
       } else {
-        // تحويل البيانات المسترجعة من JSON إلى LatLng
+    
         List<LatLng> latLngList = response.map((json) {
           var lat = json['lat'];
           var lon = json['lon'];
 
-          // التأكد من أن lat و lon ليسا فارغين وتحويلهما إلى double
+      
           if (lat != null && lon != null) {
             return LatLng(lat.toDouble(),
-                lon.toDouble()); // تحويل lat و lon إلى LatLng مع التأكد من أن البيانات هي من نوع double
+                lon.toDouble()); 
           } else {
             return LatLng(
-                0.0, 0.0); // إعادة نقطة افتراضية إذا كانت البيانات غير صالحة
+                0.0, 0.0); 
           }
         }).toList();
 
         log("Data retrieved successfully: $latLngList");
 
-        return latLngList; // إرجاع قائمة LatLng
+        return latLngList; 
       }
     } catch (e) {
       log("Error retrieving data: ${e.toString()}");
@@ -207,4 +206,31 @@ class DataCubit extends Cubit<DataState> {
       emit(DeleteDataError(message: e.toString()));
     }
   }
+  Future<void> checkEmailAndFetchToken({
+  required String email,
+}) async {
+  try {
+    final response = await supabase
+        .from('user_tokens')
+        .select()
+        .eq('id', email)
+        .maybeSingle(); 
+
+    if (response == null) {
+      emit(AddDataError(message: "❌ Email not found in user_tokens."));
+      return;
+    }
+
+    final userToken = UserTokenModel.fromJson(response);
+
+    log("✅ Found user token: ${userToken.fcmToken}, user_type: ${userToken.userType}");
+
+    
+    emit(UserTokenFound(userToken: userToken));
+  } catch (e) {
+    log("❌ Error fetching user token: ${e.toString()}");
+    emit(AddDataError(message: e.toString()));
+  }
+}
+
 }

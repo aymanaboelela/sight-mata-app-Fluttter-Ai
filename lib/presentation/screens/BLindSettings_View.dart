@@ -58,13 +58,13 @@ class _BlindsettingsViewState extends State<BlindsettingsView> {
                   GoRouter.of(context).push(AppRouter.kMyProfileView);
                 },
               ),
-              BlindsettingsContainer(
-                title: "about".tr(),
-                image: "assets/images/ix_about.png",
-                ontap: () {
-                  GoRouter.of(context).push(AppRouter.kAboutView);
-                },
-              ),
+              // BlindsettingsContainer(
+              //   title: "about".tr(),
+              //   image: "assets/images/ix_about.png",
+              //   ontap: () {
+              //     GoRouter.of(context).push(AppRouter.kAboutView);
+              //   },
+              // ),
               Blindsettingslisttile(
                 isSwitched: isSwitchedactivateTracking,
                 image: "assets/images/gis_poi-map.png",

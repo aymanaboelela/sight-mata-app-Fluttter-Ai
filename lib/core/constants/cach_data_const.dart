@@ -7,5 +7,6 @@ class AppCacheData {
   static  const activateTracking = "activateTracking";
   static  const voiceIntergration = "voiceIntergration";
   static  const selectedSound = "selectedSound";
+  static  const deviceToken = "deviceToken";
 
 }

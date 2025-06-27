@@ -15,13 +15,19 @@ import 'controllers/cubit/map_cubit.dart';
 import 'core/helper/location/location_permission.dart';
 import 'data/repository/map_repository.dart';
 import 'data/source/apis/maps_api.dart';
-
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize EasyLocalization
   await EasyLocalization.ensureInitialized();
-
+  // Initialize Firebase
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   // Initialize Supabase
   await Supabase.initialize(
     url: supabaseUrl,
@@ -55,7 +61,8 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<MapCubit>(
-          create: (_) => MapCubit(MapsRepository(MapsWebService(Dio())), LocationService()),
+          create: (_) => MapCubit(
+              MapsRepository(MapsWebService(Dio())), LocationService()),
         ),
         BlocProvider<AuthCubit>(
           create: (context) => AuthCubit(),

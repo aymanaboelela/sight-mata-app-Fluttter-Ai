@@ -7,6 +7,8 @@ import 'package:sight_mate_app/core/helper/cach_data.dart';
 import 'package:sight_mate_app/core/utils/router/app_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../core/service/reseve_notfication.dart';
+
 class SplashViewbody extends StatefulWidget {
   const SplashViewbody({super.key});
 
@@ -22,7 +24,7 @@ class _SplashViewbodyState extends State<SplashViewbody>
   @override
   void initState() {
     super.initState();
-
+    NotificationService.instance.initialize(context);
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1000),

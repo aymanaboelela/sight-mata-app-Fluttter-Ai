@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "386965574222",
+    "project_id": "singmet-2e7f8",
+    "storage_bucket": "singmet-2e7f8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:386965574222:android:44021141976293a5a4291f",
+        "android_client_info": {
+          "package_name": "com.example.sight_mate_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQ-BuPX_Ab5uwbEQ_dJTXVlw8WUkkj7wA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

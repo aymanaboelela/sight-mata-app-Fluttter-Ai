@@ -4,12 +4,16 @@ import 'package:lottie/lottie.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:sight_mate_app/controllers/add_data_cubit/data_cubit.dart';
 import 'package:sight_mate_app/core/constants/app_assets.dart';
+import 'package:sight_mate_app/core/constants/cach_data_const.dart';
 import 'package:sight_mate_app/core/constants/colors.dart';
+import 'package:sight_mate_app/core/constants/constans.dart';
+import 'package:sight_mate_app/core/helper/cach_data.dart';
+import 'package:sight_mate_app/core/service/send_notfication.dart';
 import 'package:sight_mate_app/presentation/screens/map.dart';
 import 'package:sight_mate_app/presentation/widgets/CustomTextFormField.dart';
 import 'package:sight_mate_app/presentation/widgets/Switched_ON.dart';
 import 'package:sight_mate_app/presentation/widgets/saveButton.dart';
-import 'package:easy_localization/easy_localization.dart'; // Import easy_localization
+import 'package:easy_localization/easy_localization.dart';
 
 class DistanceOffView extends StatefulWidget {
   const DistanceOffView({super.key, required this.onTap});
@@ -21,13 +25,12 @@ class DistanceOffView extends StatefulWidget {
 
 class _DistanceOffViewState extends State<DistanceOffView> {
   bool isSwitched = false;
-  TextEditingController? nameController = TextEditingController();
-  TextEditingController? emailController = TextEditingController();
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
   double? distance;
-
-  @override
   final formKey = GlobalKey<FormState>();
 
+  @override
   Widget build(BuildContext context) {
     return Form(
       key: formKey,
@@ -37,13 +40,31 @@ class _DistanceOffViewState extends State<DistanceOffView> {
             widget.onTap();
             context.read<DataCubit>().getData();
           } else if (state is AddDataError) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.message)));
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("Blind User Not Found".tr())));
+          } else if (state is UserTokenFound) {
+            final userName = CacheData.getData(key: userNameUser);
+            NotificationSender.instance.sendNotification(
+                fcmToken: state.userToken.fcmToken,
+                title: "رساله من $userName",
+                body: "يريد متابعتك لمعرفه مكانك",
+                type:"" ,
+
+                userId: "");
+            context.read<DataCubit>().addData(
+                  name: nameController.text,
+                  email: emailController.text,
+                  distance: distance,
+                  lat: selectedLocation?.latitude,
+                  lon: selectedLocation?.longitude,
+                );
           }
         },
         builder: (context, state) {
           return ModalProgressHUD(
-            inAsyncCall: state is AddDataLoading,
+            inAsyncCall: state is AddDataLoading ||
+                state is GetDataLoading ||
+                state is DeleteDataLoading,
             progressIndicator: Lottie.asset(AppAssets.loding, height: 150),
             child: Scaffold(
               body: Padding(
@@ -53,31 +74,28 @@ class _DistanceOffViewState extends State<DistanceOffView> {
                     children: [
                       Customtextformfield(
                         controller: nameController,
-                        label: "User's Name".tr(), // Translated text
-                        hintText: 'Enter name'.tr(), // Translated text
+                        label: "User's Name".tr(),
+                        hintText: 'Enter name'.tr(),
                         prefixIcon: Icons.person_3_outlined,
                       ),
-                      const SizedBox(
-                        height: 20,
-                      ),
+                      const SizedBox(height: 20),
                       Customtextformfield(
                         controller: emailController,
-                        label: "Email".tr(), // Translated text
-                        hintText: "Enter User's Email".tr(), // Translated text
+                        label: "Email".tr(),
+                        hintText: "Enter User's Email".tr(),
                         prefixIcon: Icons.email_outlined,
                       ),
-                      const SizedBox(
-                        height: 30,
-                      ),
+                      const SizedBox(height: 30),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Set Distance Alert".tr(), // Translated text
+                            "Set Distance Alert".tr(),
                             style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.primaryBlueColor),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primaryBlueColor,
+                            ),
                           ),
                           const Spacer(),
                           GestureDetector(
@@ -87,8 +105,8 @@ class _DistanceOffViewState extends State<DistanceOffView> {
                               });
                             },
                             child: Container(
-                              width: 70, // Control width
-                              height: 25, // Control height
+                              width: 70,
+                              height: 25,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
                                 color: isSwitched
@@ -123,11 +141,9 @@ class _DistanceOffViewState extends State<DistanceOffView> {
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 5.0),
                                       child: Text(
-                                        isSwitched ? "on".tr() : "off".tr(), // Translated text
-                                        style: TextStyle(
-                                          color: isSwitched
-                                              ? Colors.black
-                                              : Colors.black,
+                                        isSwitched ? "on".tr() : "off".tr(),
+                                        style: const TextStyle(
+                                          color: Colors.black,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 12,
                                         ),
@@ -138,40 +154,27 @@ class _DistanceOffViewState extends State<DistanceOffView> {
                               ),
                             ),
                           ),
-                          const Spacer(
-                            flex: 3,
-                          ),
-                          const Icon(
-                            Icons.info_outline,
-                            color: Colors.grey,
-                            size: 40,
-                          )
+                          const Spacer(flex: 3),
+                          const Icon(Icons.info_outline,
+                              color: Colors.grey, size: 40),
                         ],
                       ),
-
-                      isSwitched
-                          ? SwitchedOn(
-                              onChanged: (p0) {
-                                distance = p0;
-                              },
-                            )
-                          : const SizedBox(),
-
-                      const SizedBox(
-                        height: 90,
-                      ),
+                      if (isSwitched)
+                        SwitchedOn(
+                          onChanged: (p0) {
+                            distance = p0;
+                          },
+                        ),
+                      const SizedBox(height: 90),
                       Savebutton(
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
-                            context.read<DataCubit>().addData(
-                                name: nameController!.text,
-                                email: emailController!.text,
-                                distance: distance,
-                                lat: selectedLocation?.latitude,
-                                lon: selectedLocation?.longitude);
+                            context.read<DataCubit>().checkEmailAndFetchToken(
+                                  email: emailController.text,
+                                );
                           }
                         },
-                      )
+                      ),
                     ],
                   ),
                 ),
