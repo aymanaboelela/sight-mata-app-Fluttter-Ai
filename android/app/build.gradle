@@ -49,8 +49,7 @@ dependencies {
     implementation "androidx.camera:camera-lifecycle:1.3.1"
     implementation "androidx.camera:camera-video:1.3.1"
 
-    implementation 'org.tensorflow:tensorflow-lite:2.8.0' // Add TensorFlow Lite core dependency
-    implementation 'org.tensorflow:tensorflow-lite-gpu:2.8.0' // TensorFlow Lite GPU delegate
+
     implementation 'com.google.android.play:core:1.10.3' // Play Core library
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
 }

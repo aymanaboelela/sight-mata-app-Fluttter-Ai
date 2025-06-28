@@ -20,11 +20,20 @@ allprojects {
 }
 
 rootProject.buildDir = '../build'
+
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
+
 subprojects {
     project.evaluationDependsOn(':app')
+    
+    // ✅ Force bcprov to use version 1.77 (compatible with Java 17)
+    configurations.all {
+        resolutionStrategy {
+            force 'org.bouncycastle:bcprov-jdk18on:1.77'
+        }
+    }
 }
 
 tasks.register("clean", Delete) {

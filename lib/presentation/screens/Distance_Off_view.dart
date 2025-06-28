@@ -45,13 +45,16 @@ class _DistanceOffViewState extends State<DistanceOffView> {
           } else if (state is UserTokenFound) {
             final userName = CacheData.getData(key: userNameUser);
             NotificationSender.instance.sendNotification(
-                fcmToken: state.userToken.fcmToken,
-                title: "رساله من $userName",
-                body: "يريد متابعتك لمعرفه مكانك",
-                type:"" ,
-
-                userId: "");
+              fcmToken: state.userToken.fcmToken,
+              title: "رساله من $userName",
+              body: "$userName يريد متابعتك لمعرفه موقعك",
+              type: "follow_request",
+              userId: state.userToken.id,
+            );
             context.read<DataCubit>().addData(
+                  followerToken:
+                      CacheData.getData(key: AppCacheData.deviceToken),
+                  blindToken: state.userToken.fcmToken,
                   name: nameController.text,
                   email: emailController.text,
                   distance: distance,

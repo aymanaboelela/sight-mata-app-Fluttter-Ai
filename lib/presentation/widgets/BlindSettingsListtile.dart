@@ -7,7 +7,8 @@ class Blindsettingslisttile extends StatefulWidget {
       required this.image,
       required this.title,
       required this.subtitle,
-      required this.ontap, this.isSwitched});
+      required this.ontap,
+      this.isSwitched});
   final String image;
   final String title;
   final String subtitle;
@@ -21,16 +22,15 @@ class Blindsettingslisttile extends StatefulWidget {
 class _BlindsettingslisttileState extends State<Blindsettingslisttile> {
   @override
   void initState() {
-    isSwitched = widget.isSwitched?? false;
+    isSwitched = widget.isSwitched ?? false;
     super.initState();
   }
 
-  bool isSwitched = false;
+  bool isSwitched = true;
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
-      height: 80,
       decoration: BoxDecoration(
           color: const Color(0xffBFD1DE),
           borderRadius: BorderRadius.circular(10)),
@@ -45,19 +45,15 @@ class _BlindsettingslisttileState extends State<Blindsettingslisttile> {
         ),
         subtitle: Padding(
             padding: const EdgeInsets.only(top: 10),
-            child: FittedBox(
-                child: Text(
+            child: Text(
               widget.subtitle,
-              style:
-                  const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-            ))),
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+            )),
         trailing: GestureDetector(
           onTap: () {
             setState(() {
               isSwitched = !isSwitched;
               widget.ontap!(isSwitched);
-        
-              
             });
           },
           child: Container(
@@ -65,16 +61,14 @@ class _BlindsettingslisttileState extends State<Blindsettingslisttile> {
             height: 25, // Control height
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              color:
-                  isSwitched ? AppColors.primaryBlueColor : Colors.grey[400],
+              color: isSwitched ? AppColors.primaryBlueColor : Colors.grey[400],
             ),
             child: Stack(
               alignment: Alignment.center,
               children: [
                 Align(
-                  alignment: isSwitched
-                      ? Alignment.centerRight
-                      : Alignment.centerLeft,
+                  alignment:
+                      isSwitched ? Alignment.centerRight : Alignment.centerLeft,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 5.0),
                     child: Text(
@@ -89,9 +83,8 @@ class _BlindsettingslisttileState extends State<Blindsettingslisttile> {
                 AnimatedAlign(
                   duration: const Duration(milliseconds: 100),
                   curve: Curves.easeInOut,
-                  alignment: isSwitched
-                      ? Alignment.centerRight
-                      : Alignment.centerLeft,
+                  alignment:
+                      isSwitched ? Alignment.centerRight : Alignment.centerLeft,
                   child: Container(
                     width: 20,
                     height: 20,

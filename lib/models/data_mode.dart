@@ -2,6 +2,8 @@ class DataModel {
   final String? id;
   final String userid;
   final String username;
+  final String? blindToken;
+  final String? followerToken;
   final String email;
   final double? distance;
   final double? lat;
@@ -9,6 +11,8 @@ class DataModel {
 
   DataModel({
     this.id,
+    this.blindToken,
+    this.followerToken,
     required this.userid,
     required this.username,
     required this.email,
@@ -24,6 +28,8 @@ class DataModel {
       userid: json['userid'],
       username: json['username'],
       email: json['email'],
+      followerToken: json['fcm_Token_follower'],
+      blindToken: json['blindToken'],
       distance: json['distance'] != null
           ? (json['distance'] as num).toDouble()
           : null,
@@ -41,6 +47,8 @@ class DataModel {
       'distance': distance,
       'lat': lat,
       'lon': lon,
+      "fcm_Token_follower": followerToken ?? '',
+      "blindToken": blindToken ?? '',
     };
   }
 }

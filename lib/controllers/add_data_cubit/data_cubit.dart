@@ -1,7 +1,9 @@
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+
 import 'package:latlong2/latlong.dart';
+import 'package:location/location.dart';
 import 'package:meta/meta.dart';
 
 import 'package:sight_mate_app/models/data_mode.dart';
@@ -18,6 +20,8 @@ class DataCubit extends Cubit<DataState> {
   Future<void> addData({
     required String name,
     required String email,
+    required String blindToken,
+    required String followerToken,
     double? distance,
     double? lat,
     double? lon,
@@ -40,6 +44,8 @@ class DataCubit extends Cubit<DataState> {
         distance: distance,
         lat: lat,
         lon: lon,
+        blindToken: blindToken,
+        followerToken: followerToken,
       );
 
       await supabase.from('addusersdata').insert(userData.toJson());
@@ -66,9 +72,8 @@ class DataCubit extends Cubit<DataState> {
 
       if (response.isEmpty) {
         emit(GetDataEmpty());
-        return []; 
+        return [];
       } else {
-       
         List<DataModel> dataList =
             response.map((json) => DataModel.fromJson(json)).toList();
 
@@ -76,7 +81,7 @@ class DataCubit extends Cubit<DataState> {
 
         emit(GetDataSuccess(data: dataList));
 
-        return dataList; 
+        return dataList;
       }
     } catch (e) {
       log("Error retrieving data: ${e.toString()}");
@@ -97,7 +102,6 @@ class DataCubit extends Cubit<DataState> {
     emit(UpdateDataLoading());
 
     try {
-
       final sessionResponse = await supabase.auth.refreshSession();
       log("Session refreshed: ${sessionResponse.toString()}");
 
@@ -117,7 +121,7 @@ class DataCubit extends Cubit<DataState> {
         lat: lat,
         lon: lon,
       );
-     
+
       final response = await supabase
           .from('addusersdata')
           .update(userData.toJson())
@@ -132,43 +136,36 @@ class DataCubit extends Cubit<DataState> {
     }
   }
 
-
   Future<List<LatLng>> getAllUsersWithLatLon() async {
     emit(GetDataLoading());
 
     try {
-     
       await supabase.auth.refreshSession();
 
-     
       final response = await supabase
           .from('addusersdata')
           .select()
           .not('lat', 'is', null)
-          .not('lon', 'is', null); 
+          .not('lon', 'is', null);
 
       if (response.isEmpty) {
         emit(GetDataEmpty());
         return [];
       } else {
-    
         List<LatLng> latLngList = response.map((json) {
           var lat = json['lat'];
           var lon = json['lon'];
 
-      
           if (lat != null && lon != null) {
-            return LatLng(lat.toDouble(),
-                lon.toDouble()); 
+            return LatLng(lat.toDouble(), lon.toDouble());
           } else {
-            return LatLng(
-                0.0, 0.0); 
+            return LatLng(0.0, 0.0);
           }
         }).toList();
 
         log("Data retrieved successfully: $latLngList");
 
-        return latLngList; 
+        return latLngList;
       }
     } catch (e) {
       log("Error retrieving data: ${e.toString()}");
@@ -206,31 +203,114 @@ class DataCubit extends Cubit<DataState> {
       emit(DeleteDataError(message: e.toString()));
     }
   }
+
   Future<void> checkEmailAndFetchToken({
-  required String email,
-}) async {
-  try {
-    final response = await supabase
-        .from('user_tokens')
-        .select()
-        .eq('id', email)
-        .maybeSingle(); 
+    required String email,
+  }) async {
+    try {
+      final response = await supabase
+          .from('user_tokens')
+          .select()
+          .eq('id', email)
+          .maybeSingle();
 
-    if (response == null) {
-      emit(AddDataError(message: "❌ Email not found in user_tokens."));
-      return;
+      if (response == null) {
+        emit(AddDataError(message: "❌ Email not found in user_tokens."));
+        return;
+      }
+
+      final userToken = UserTokenModel.fromJson(response);
+
+      log("✅ Found user token: ${userToken.fcmToken}, user_type: ${userToken.userType}");
+
+      emit(UserTokenFound(userToken: userToken));
+    } catch (e) {
+      log("❌ Error fetching user token: ${e.toString()}");
+      emit(AddDataError(message: e.toString()));
     }
-
-    final userToken = UserTokenModel.fromJson(response);
-
-    log("✅ Found user token: ${userToken.fcmToken}, user_type: ${userToken.userType}");
-
-    
-    emit(UserTokenFound(userToken: userToken));
-  } catch (e) {
-    log("❌ Error fetching user token: ${e.toString()}");
-    emit(AddDataError(message: e.toString()));
   }
-}
 
+  Future<DataModel?> getUserDataByEmail() async {
+    try {
+      // الحصول على المستخدم الحالي
+      final user = supabase.auth.currentUser;
+      final email = user?.email;
+
+      if (email == null) {
+        log("❌ No logged-in user.");
+        return null;
+      }
+
+      log("📥 Fetching user data for email: $email");
+
+      // استخدام maybeSingle لتفادي الخطأ عند وجود أكثر من صف
+      final response = await supabase
+          .from('addusersdata')
+          .select()
+          .eq('email', email)
+          .limit(1)
+          .maybeSingle();
+
+      if (response == null) {
+        log("❌ No data found for the current user email.");
+        return null;
+      }
+
+      log("✅ User data retrieved successfully: $response");
+
+      return DataModel.fromJson(response);
+    } catch (e) {
+      log('❌ Unexpected Error: $e');
+      throw Exception('❌ Unexpected Error: $e');
+    }
+  }
+
+  Future<bool> updateCurrentLocation(
+      {required bool isUnTrackingEnabled}) async {
+    try {
+      final location = Location();
+
+      // التأكد من الصلاحيات
+      bool serviceEnabled = await location.serviceEnabled();
+      if (!serviceEnabled) {
+        serviceEnabled = await location.requestService();
+        if (!serviceEnabled) {
+          log("❌ Location service not enabled.");
+          return false;
+        }
+      }
+
+      PermissionStatus permissionGranted = await location.hasPermission();
+      if (permissionGranted == PermissionStatus.denied) {
+        permissionGranted = await location.requestPermission();
+        if (permissionGranted != PermissionStatus.granted) {
+          log("❌ Location permission not granted.");
+          return false;
+        }
+      }
+
+      // الحصول على الموقع الحالي
+      final currentLocation = await location.getLocation();
+
+      final user = supabase.auth.currentUser;
+      final email = user?.email;
+
+      if (email == null) {
+        log("❌ No logged-in user.");
+        return false;
+      }
+
+      // تحديث lat و lon في Supabase
+      final response = await supabase.from('addusersdata').update({
+        'lat': isUnTrackingEnabled == true ? null : currentLocation.latitude,
+        'lon': isUnTrackingEnabled == true ? null : currentLocation.longitude,
+      }).eq('email', email);
+
+      log("✅ Location updated: ${currentLocation.latitude}, ${currentLocation.longitude}");
+      return true;
+    } catch (e) {
+      log("❌ Error updating location: $e");
+      return false;
+    }
+  }
 }

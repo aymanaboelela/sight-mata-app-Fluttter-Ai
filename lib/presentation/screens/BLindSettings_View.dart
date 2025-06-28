@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sight_mate_app/controllers/add_data_cubit/data_cubit.dart';
 import 'package:sight_mate_app/controllers/auth/auth_cubit.dart';
 import 'package:sight_mate_app/core/constants/cach_data_const.dart';
 import 'package:sight_mate_app/core/constants/colors.dart';
@@ -71,6 +72,15 @@ class _BlindsettingsViewState extends State<BlindsettingsView> {
                 title: "activate_tracking".tr(),
                 subtitle: "tracking_description".tr(),
                 ontap: (b3) {
+                  if (b3 == false) {
+                    context
+                        .read<DataCubit>()
+                        .updateCurrentLocation(isUnTrackingEnabled: true);
+                  } else {
+                    context
+                        .read<DataCubit>()
+                        .updateCurrentLocation(isUnTrackingEnabled: false);
+                  }
                   CacheData.setData(
                       key: AppCacheData.activateTracking, value: b3);
                 },

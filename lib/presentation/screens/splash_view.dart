@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:location/location.dart';
 import 'package:sight_mate_app/core/constants/app_assets.dart';
 import 'package:sight_mate_app/core/constants/cach_data_const.dart';
 import 'package:sight_mate_app/core/constants/colors.dart';
@@ -24,6 +25,7 @@ class _SplashViewbodyState extends State<SplashViewbody>
   @override
   void initState() {
     super.initState();
+    requestLocationPermission();
     NotificationService.instance.initialize(context);
     _animationController = AnimationController(
       vsync: this,
@@ -95,4 +97,33 @@ class _SplashViewbodyState extends State<SplashViewbody>
       }
     });
   }
+}
+
+Future<void> requestLocationPermission() async {
+  final Location location = Location();
+
+  bool _serviceEnabled;
+  PermissionStatus _permissionGranted;
+
+  // التأكد من أن خدمة الموقع مفعّلة
+  _serviceEnabled = await location.serviceEnabled();
+  if (!_serviceEnabled) {
+    _serviceEnabled = await location.requestService();
+    if (!_serviceEnabled) {
+      print("❌ Location service not enabled");
+      return;
+    }
+  }
+
+  // التحقق من صلاحية الوصول للموقع
+  _permissionGranted = await location.hasPermission();
+  if (_permissionGranted == PermissionStatus.denied) {
+    _permissionGranted = await location.requestPermission();
+    if (_permissionGranted != PermissionStatus.granted) {
+      print("❌ Location permission not granted");
+      return;
+    }
+  }
+
+  print("✅ Location permission granted");
 }
